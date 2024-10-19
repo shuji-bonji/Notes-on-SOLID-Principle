@@ -11,273 +11,131 @@
 
 ## インターフェース分離の原則に違反した例
 
-```mermaid
-classDiagram
-  direction TB
-  class Vehicle {
-    << interface >>
-    name: string
-    color: string
-    start()
-    stop()
-    fly()
-  }
-  class AirPlane {
-    name: string
-    color: string
-    start()
-    stop()
-    fly()
-  }
-  class Car {
-    name: string
-    color: string
-    start()
-    stop()
-    fly() 👈 
-  }
-  Vehicle <|.. AirPlane
-  Vehicle <|.. Car
+たとえば「多機能プリンタ」を考えてみましょう。  
+印刷・スキャン・FAX の機能をすべて持つ `MultiFunctionDevice` インターフェースを定義し、それをすべてのプリンタに強制している例です。
+
+```ts
+interface MultiFunctionDevice {
+  print(): void;
+  scan(): void;
+  fax(): void;
+}
+
+class AllInOnePrinter implements MultiFunctionDevice {
+  print() { console.log('印刷しました'); }
+  scan() { console.log('スキャンしました'); }
+  fax()  { console.log('FAXを送信しました'); }
+}
+
+class SimplePrinter implements MultiFunctionDevice {
+  print() { console.log('印刷しました'); }
+  scan() { throw new Error('このプリンタはスキャンできません'); }
+  fax()  { throw new Error('このプリンタはFAXできません'); }
+}
 ```
 
-## インターフェース分離に違反するとどうなるのか
-- インターフェースに変更があると、実装側で使っていないメソッドである場合も修正しなければならなくなる
-- 不要なメソッドを使わない（退化させる）ことで、リスコフの置換原則に違反する
-- インターフェースが複数のアクターに使われる場合、単一責任の原則に違反する
+### ❌ 問題点
 
+- `SimplePrinter` はスキャンもFAXもできないのに、無理やり実装を強制されている
+- 利用者も「使えない機能」を見えてしまう
+- 将来の変更時に、関係のない機能まで対応を強いられる
 
-## 解決策
-役割ごとにインターフェースを分割する
+---
 
-```mermaid
-classDiagram
-  direction TB
-  class Vehicle {
-    << interface >>
-    name: string
-    color: string
-  }
-  class Movable {
-    << interface >>
-    start()
-    stop()
-  }
-  class Flyable {
-    << interface >>
-    fly()
-  }
-  class AirPlane {
-    name: string
-    color: string
-    start()
-    stop()
-    fly()
-  }
-  class Car {
-    name: string
-    color: string
-    start()
-    stop()
-    fly() 👈 
-  }
-  Vehicle <|.. AirPlane
-  Movable <|.. AirPlane
-  Flyable <|.. AirPlane
-  Vehicle <|.. Car
-  Movable <|.. Car
+## 原則に違反するとどうなるか
+
+```ts
+const printer = new SimplePrinter();
+printer.scan(); // 実行時にエラー
 ```
 
+- クライアントコードが「スキャンできる」と誤解して使ってしまう
+- 実行時エラーの原因となり、信頼性を損なう
+
+---
+
+## 解決策：機能ごとにインターフェースを分割する
+
+```ts
+interface Printer {
+  print(): void;
+}
+
+interface Scanner {
+  scan(): void;
+}
+
+interface Fax {
+  fax(): void;
+}
+
+class AllInOnePrinter implements Printer, Scanner, Fax {
+  print() { console.log('印刷しました'); }
+  scan()  { console.log('スキャンしました'); }
+  fax()   { console.log('FAXを送信しました'); }
+}
+
+class SimplePrinter implements Printer {
+  print() { console.log('印刷しました'); }
+}
+```
+
+このように分離することで、  
+「必要な機能だけ」を実装し、「必要なインターフェースだけ」に依存できるようになります。
+
+→ インターフェース分離の原則に準拠した設計になります。
 
 ## TypeScript
 
 ### 違反例
 
-```mermaid
-classDiagram
-  direction TB
-  class Vehicle {
-    << interface >>
-    name: string
-    color: string
-    start()
-    stop()
-    fly()
-  }
-  class AirPlane {
-    name: string
-    color: string
-    start()
-    stop()
-    fly()
-  }
-  class Car {
-    name: string
-    color: string
-    start()
-    stop()
-    fly() 👈 
-  }
-  Vehicle <|.. AirPlane
-  Vehicle <|.. Car
-```
+```ts
+interface MultiFunctionDevice {
+  print(): void;
+  scan(): void;
+  fax(): void;
+}
 
+class AllInOnePrinter implements MultiFunctionDevice {
+  print() { console.log('印刷しました'); }
+  scan() { console.log('スキャンしました'); }
+  fax()  { console.log('FAXを送信しました'); }
+}
+
+class SimplePrinter implements MultiFunctionDevice {
+  print() { console.log('印刷しました'); }
+  scan() { throw new Error('このプリンタはスキャンできません'); }
+  fax()  { throw new Error('このプリンタはFAXできません'); }
+}
+```
 
 ```ts
-interface Vehicle {
-  name: string;
-  color: string;
-  start(): void;
-  stop(): void;
-  fly(): void;
+interface Printer {
+  print(): void;
 }
 
-class AirPlane implements Vehicle {
-  constructor(public name: string, public color: string) {}
-  start() {
-    console.log('start');
-  }
-  stop() {
-    console.log('stop');
-  }
-  fly() {
-    console.log('fly');
-  }
+interface Scanner {
+  scan(): void;
 }
 
-class Car implements Vehicle {
-  constructor(public name: string, public color: string) {}
-  start() {
-    console.log('start');
-  }
-  stop() {
-    console.log('stop');
-  }
-  fly() {
-    throw new Error('Car is not fly()');
-  }
+interface Fax {
+  fax(): void;
 }
 
-const run = () => {
-  const airPlane: Vehicle = new AirPlane('a1', 'silver');
-  airPlane.start();
-  airPlane.fly();
-  airPlane.stop();
-
-  const car: Vehicle = new Car('c1', 'white');
-  car.start();
-  car.fly();
-};
-
-run();
-```
-
-##### 実行結果
-```
-start
-fly
-stop
-start
-```
-
-### 解決策
-
-
-```mermaid
-classDiagram
-  direction TB
-  class Vehicle {
-    << interface >>
-    name: string
-    color: string
-  }
-  class Movable {
-    << interface >>
-    start()
-    stop()
-  }
-  class Flyable {
-    << interface >>
-    fly()
-  }
-  class AirPlane {
-    name: string
-    color: string
-    start()
-    stop()
-    fly()
-  }
-  class Car {
-    name: string
-    color: string
-    start()
-    stop()
-    fly() 👈 
-  }
-  Vehicle <|.. AirPlane
-  Movable <|.. AirPlane
-  Flyable <|.. AirPlane
-  Vehicle <|.. Car
-  Movable <|.. Car
-```
-
-
-```ts
-interface Vehicle {
-  name: string;
-  color: string;
-}
-interface Movable {
-  start();
-  stop();
-}
-interface Flyable {
-  fly();
+class AllInOnePrinter implements Printer, Scanner, Fax {
+  print() { console.log('印刷しました'); }
+  scan()  { console.log('スキャンしました'); }
+  fax()   { console.log('FAXを送信しました'); }
 }
 
-class AirPlane implements Vehicle, Movable, Flyable {
-  constructor(public name: string, public color: string) {}
-  start() {
-    console.log('start');
-  }
-  stop() {
-    console.log('stop');
-  }
-  fly() {
-    console.log('fly');
-  }
+class SimplePrinter implements Printer {
+  print() { console.log('印刷しました'); }
 }
-
-class Car implements Vehicle, Movable {
-  constructor(public name: string, public color: string) {}
-  start() {
-    console.log('start');
-  }
-  stop() {
-    console.log('stop');
-  }
-}
-
-const run = () => {
-  const airPlane = new AirPlane('a1', 'silver');
-  airPlane.start();
-  airPlane.fly();
-  airPlane.stop();
-
-  const car = new Car('c1', 'white');
-  car.start();
-  car.stop();
-};
-
-run();
-
 ```
 
 ##### 実行結果
 
 ```
-start
-fly
-stop
-start
-stop
+印刷しました
+印刷しました
 ```

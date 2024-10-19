@@ -1,243 +1,119 @@
 # 単一責任の原則
 
 ## 単一責任の原則とは
-クラスは「たったひとつのアクターに対して責務を負う」べきである。  
-**アクターが異なるクラスは、アクター毎に分割するべきです。**
 
-※ `アクター`: そのクラスを使用するユーザーやステークスホルダー
+**クラスは「たった一人のアクター（利用者・責任者）」に対して責任を持つべき**という原則です。
 
-## 単一原則に違反した例
-
-```mermaid
-classDiagram
-  direction LR
-    class Employee {
-      name: string
-      department: string
-      calculatePay()
-      reportHours()
-      save()
-      getRegularHours()
-    }
-    class Engineer {
-    }
-    class HumanResourcesDepartment {
-    }
-    class AccountingDepartment {
-    }
-    AccountingDepartment --> Employee
-    HumanResourcesDepartment --> Employee
-    Employee <|-- Engineer
-```
-
-### 仕様変更
-
-1. 経理部門（AccountingDepartment）からの依頼で`getRreqularHours()`の変更を行った。
-2. 変更後にテストし、経理部門にも確認しもらいリリース
-3. 人事部門から「レポート結果が間違っていると」クレームが入る。
+> [!CAUTION]
+> 「ひとつのことだけをする」ではなく、「ひとつのアクターに対して責任を持つ」という点に注意してください。
 
 
-```mermaid
-classDiagram
-  direction LR
-    class Employee {
-      name: string
-      department: string
-      calculatePay()
-      reportHours()
-      save()
-      getRegularHours()
-    }
-    class Engineer {
-    }
-    class HumanResourcesDepartment {
-    }
-    class AccountingDepartment {
-    }
-    AccountingDepartment --> Employee
-    HumanResourcesDepartment --> Employee
-    Employee <|-- Engineer
-```
+## 単一責任に違反している例
 
-### 原因
-経理部門と人事部門と異なるのに同一のメソッドにて労働時間取得していた為、人事部門では修正する必要がなかったのに、経理部門の修正が人事部門の利用にも影響した。
+以下は、レポートを印刷・保存・送信する処理を1つのクラスに詰め込んだ例です。
 
-## 原則に違反するとどうなるのか
-- あるアクターのために行なった変更の影響が別のアクターにも及び、バグが生まれてしまう可能性がある。
-- 変更前にどのアクターに影響があるかを調査する工数がかかる。
-- 変更後に全てのアクターに対してバクが発生していないかのテストを行う工数がかかる
-- コードの共通部分を同時に変更してしまい、コンフリクトする可能性がある。
-
-
-## 解決策
-```mermaid
-classDiagram
-  direction TB
-    class EmployeeData {
-      name: string
-      department: string
-    }
-    class EmployeeRepository {
-      save()
-    }
-    class HoureReporter {
-      -getRegularHoures()
-      reportHours()
-    }
-    class PayCalculator {
-      -getRegularHoures()
-      reportHours()
-    }
-    class Engineer {
-    }
-    class HumanResourcesDepartment {
-    }
-    class AccountingDepartment {
-    }
-    EmployeeData <-- EmployeeRepository
-    EmployeeData <-- HoureReporter
-    EmployeeData <-- PayCalculator
-    EmployeeRepository <-- Engineer
-    HoureReporter <-- HumanResourcesDepartment
-    PayCalculator <-- AccountingDepartment
-```
-
-
-## 補足
-
-### DRYの原則との関係
-Don"t Repeat Yourselfの原則とは、コードの繰り返しを避けろという内容の原則。  
-ただし、同じようなロジックであっても、概念が違うものはDRYにすべきではない。
-
-ビジネスを理解し、概念を理解できていないと単一責任の原則を完全に満たすことは難しい。
-
-----
-
-## TypeScript
-### 違反例
-#### 仕様変更前
 ```ts
-class Employee {
-  constructor(public name: string, public department: string) {}
+class ReportManager {
+  constructor(private title: string, private content: string) {}
 
-  // 経理部門がアウター
-  calculatoPay() {
-    this.getRegularHoures();
-    console.log(`${this.name}の給与を計算しました。`);
+  print() {
+    console.log(`印刷: ${this.title}\n${this.content}`);
   }
 
-  // 人事部門がアクター
-  reportHours() {
-    this.getRegularHoures();
-    console.log(`${this.name}の労働時間をレポートしました。`);
+  saveToFile() {
+    console.log(`ファイル保存: ${this.title}.txt`);
   }
 
-  // データベースの管理者がアクター
-  save() {
-    console.log(`${this.name}を保存しました。`);
-  }
-
-  private getRegularHoures() {
-    // 仕様変更前
-    console.log('経理部門・人事部門共通ロジック');
-    // 仕様変更後
-    // console.log('経理部門の仕様変更済み。');
+  sendEmail() {
+    console.log(`メール送信: ${this.title}`);
   }
 }
-
-const run = () => {
-  const emp = new Employee('山田', '開発');
-
-  console.log('');
-  console.log('経理部門');
-  emp.calculatoPay();
-
-  console.log('');
-  console.log('人事部門');
-  emp.reportHours();
-};
-
-run();
-```
-##### 実行結果（変更前）
 ```
 
-経理部門
-経理部門・人事部門共通ロジック
-山田の給与を計算しました。
+### 問題点
 
-人事部門
-経理部門・人事部門共通ロジック
-山田の労働時間をレポートしました。
-```
-##### 実行結果（変更後）
-```
+- `print()` → プリンタ担当者の責任
+- `saveToFile()` → ファイル管理者の責任
+- `sendEmail()` → 通信・メール担当の責任
 
-経理部門
-経理部門の仕様変更済み。
-山田の給与を計算しました。
+アクターが異なる処理が1つのクラスに混在しており、単一責任の原則に違反しています。
 
-人事部門
-経理部門の仕様変更済み。 👈 ここが間違っている
-山田の労働時間をレポートしました。
-```
 
-### 解決策
+## 原則に違反するとどうなるか
 
-#### 仕様変更前
+- 一部の修正（例: メール送信仕様変更）が他の処理（印刷や保存）にも影響する
+- どの責任に影響があるかを特定するのに時間がかかる
+- テスト対象が多く、修正のリスクが高くなる
+
 ```ts
-class EmployeeData {
-  constructor(public name: string, public department: string) {}
-}
+// メール送信仕様を変更したいが、他の処理も巻き込んでしまう例
+class ReportManager {
+  constructor(private title: string, private content: string) {}
 
-class EmployeeRepository {
-  constructor(private employeeData: EmployeeData) {}
-  // データベースの管理者がアクター
-  save() {
-    console.log(`${this.employeeData.name}を保存しました。`);
+  print() {
+    console.log(`印刷: ${this.title}\n${this.content}`);
+  }
+
+  saveToFile() {
+    console.log(`ファイル保存: ${this.title}.txt`);
+  }
+
+  sendEmail() {
+    // メール仕様変更：宛先やフォーマット変更を行いたい
+    const recipient = 'admin@example.com';
+    const message = `件名: ${this.title}\n本文: ${this.content}`;
+    console.log(`新メール仕様で送信: To=${recipient}\n${message}`);
   }
 }
 
-class HoureReporter {
-  private getRegularHours() {
-    console.log('労働時間レポート専用の労働時間計算ロジック');
-  }
-  reportHours(employeeData: EmployeeData) {
-    console.log(`${employeeData.name}の労働時間をレポートしましした。`);
-  }
-}
-class PayCalculator {
-  private getRegularHours() {
-    console.log('給与計算用の労働時間計算ロジック');
-  }
-  calculatePay(employeeData: EmployeeData) {
-    this.getRegularHours();
-    console.log(`${employeeData.name}の給与を計算しました。`);
-  }
-}
-
-const run = () => {
-  const employeeData = new EmployeeData('鈴木', '開発');
-  const payCalculator = new PayCalculator();
-  const hourReporter = new HoureReporter();
-
-  console.log('経理部門');
-  payCalculator.calculatePay(employeeData);
-  console.log('');
-  console.log('人事部門');
-  hourReporter.reportHours(employeeData);
-};
-
-run();
-
+// → メール送信の仕様を変更するだけなのに、
+//    ReportManager そのものを変更してしまう。
+//    その結果、印刷処理や保存処理のテスト・挙動にも影響が出る可能性がある。
 ```
 
-##### 実行結果
-```
-経理部門
-給与計算用の労働時間計算ロジック
-鈴木の給与を計算しました。
+## 解決策：責任を分離する
 
-人事部門
-鈴木の労働時間をレポートしましした。。
+```ts
+class Report {
+  constructor(public title: string, public content: string) {}
+}
+
+class Printer {
+  print(report: Report) {
+    console.log(`印刷: ${report.title}\n${report.content}`);
+  }
+}
+
+class FileSaver {
+  save(report: Report) {
+    console.log(`ファイル保存: ${report.title}.txt`);
+  }
+}
+
+class EmailSender {
+  send(report: Report) {
+    console.log(`メール送信: ${report.title}`);
+  }
+}
 ```
+
+### 実行例
+
+```ts
+const report = new Report('売上レポート', '売上は前年比120%でした。');
+const printer = new Printer();
+const saver = new FileSaver();
+const sender = new EmailSender();
+
+printer.print(report);
+saver.save(report);
+sender.send(report);
+```
+
+
+## 補足：DRY原則との関係
+
+DRY（Don’t Repeat Yourself）原則は「重複を避ける」ことを推奨しますが、  
+**異なるアクターの責任を無理に1つの関数でまとめるのは逆効果**です。
+
+単一責任の原則を満たすには、ビジネス上の責任範囲を理解することが重要です。

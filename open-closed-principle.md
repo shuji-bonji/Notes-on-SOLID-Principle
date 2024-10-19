@@ -1,373 +1,104 @@
-# オープンクローズドの原則
-
 ## オープンクローズドの原則とは
-ソフトウェアの構成要素は**拡張に対して開かれて**いて、**修正に対して閉じて**いないければいけない。
 
-1. 拡張に対して開かれている:  
-新たなコードを追加することで、機能を拡張することができる
-2. 修正に対して閉じている:  
-拡張によって既存のコードが修正されない
+**ソフトウェアの構成要素は「拡張に開かれ」「修正に閉じられている」べき**という原則です。
 
-➡️ **ソフトウェアの振る舞いは既存の成果物を変更せずに拡張できるようにすべき**
-
-## オープン・クローズドの原則を適用すべきケース
-- **種別によって振る舞いの変更が必要な場合**
-   - 会員ランク
-      - Bronseならポイント1倍
-      - Silverならポイント2倍
-      - Goldならポイント3倍
-   - データの保存先の種類
-      - RDB
-      - NoSQL
-      - CSV File
-
-➡️ **種別の拡張があった場合でも、既存のコード変更することなく対応可能**
+- **拡張に開かれている**：新しい要件や機能を追加できる
+- **修正に閉じられている**：既存の安定したコードを変更しなくてもよい
 
 
+## 現実のたとえ：通知サービス
 
-## オープンクローズドの原則に違反した例
-
-```mermaid
-classDiagram
-  direction LR
-    class BonusCalculator {
-      base: number
-      getBonus(employee: Employee)
-    }
-    class Employee {
-      name: string
-      grade: 'junior' | 'middle' | 'senior'
-    }
-    BonusCalculator --> Employee
-```
+たとえば「アプリ通知システム」を考えてみましょう。  
+ユーザーに対して様々な方法で通知を送る仕組みです。
 
 ```ts
-getBonus(employee: Employee): number {
-  if (employee.grade === 'junior') {
-    return Math.floor(this.base * 1.1);
-  } else if (employee.grade === 'middle') 
-    return Math.floor(this.base * 1.5);{
-  } else {
-    return Math.floor(this.base * 2);
+class NotificationService {
+  notify(type: string, message: string) {
+    if (type === 'email') {
+      console.log(`メール送信: ${message}`);
+    } else if (type === 'sms') {
+      console.log(`SMS送信: ${message}`);
+    } else if (type === 'push') {
+      console.log(`プッシュ通知: ${message}`);
+    }
   }
 }
 ```
 
+### ❌ 問題点（原則に違反）
 
-### 仕様変更
-`grade`に新しく`expert`を追加した場合
+- 通知方法が増えるたびに、`NotificationService`の中身を書き換える必要がある
+- テスト済みの既存コードに手を加えることになるため、バグのリスクが高まる
+- 単一責任の原則にも違反している（通知種別ごとの責任が1クラスに集中）
 
-```mermaid
-classDiagram
-  direction LR
-    class BonusCalculator {
-      base: number
-      getBonus(employee: Employee)
-    }
-    class Employee {
-      name: string
-      grade: 'junior' | 'middle' | 'senior' | 'expert'
-    }
-    BonusCalculator --> Employee
-```
-
-```ts
-getBonus(employee: Employee): number {
-  if (employee.grade === 'junior') {
-    return Math.floor(this.base * 1.1);
-  } else if (employee.grade === 'middle') 
-    return Math.floor(this.base * 1.5);{
-  } else if (employee.grade === 'senior') 
-    return Math.floor(this.base * 2);
-  } else {
-    return Math.floor(this.base * 3);
-  }
-}
-```
 
 ## 原則に違反するとどうなるか
 
-- 既存のコードに修正を加えると、バグを生んでしまう可能性がある  
-軽微な修正であっても、ケアレスミスをする可能性がある
-- 既存のコードに対して再テストを行う工数がかかる  
-機能が増えてくるとテストの工数も増えていく
-
-## 解決策
-
-拡張の可能性があるのものを抽象化し、具体の種別は抽象を実装する
-
-
-```mermaid
-classDiagram
-  direction TB
-    class Employee {
-      << interface >>
-      name: string
-      getBonus(base: number): number
-    }
-    class JuniorEmployee {
-      name: string
-      getBonus(base: number): number
-    }
-    class MiddleEmployee {
-      name: string
-      getBonus(base: number): number
-    }
-    class SeniorEmployee {
-      name: string
-      getBonus(base: number): number
-    }
-    Employee <|.. JuniorEmployee
-    Employee <|.. MiddleEmployee
-    Employee <|.. SeniorEmployee
-```
-### 仕様変更後
-新たに`ExpertEmployee`が追加されていても、既存の`Employee`には影響しない。
-
-```mermaid
-classDiagram
-  direction TB
-    class Employee {
-      << interface >>
-      name: string
-      getBonus(base: number): number
-    }
-    class JuniorEmployee {
-      name: string
-      getBonus(base: number): number
-    }
-    class MiddleEmployee {
-      name: string
-      getBonus(base: number): number
-    }
-    class SeniorEmployee {
-      name: string
-      getBonus(base: number): number
-    }
-    class ExpertEmployee {
-      name: string
-      getBonus(base: number): number
-    }
-    Employee <|.. JuniorEmployee
-    Employee <|.. MiddleEmployee
-    Employee <|.. SeniorEmployee
-    Employee <|.. ExpertEmployee
-```
-
-----
-
-## TypeScript
-
-### 違反例
-
-#### 仕様変更前
 ```ts
-type Grade = 'junior' | 'middle' | 'senior';
-
-class Employee {
-  constructor(public namme: string, public grade: Grade) {}
-}
-
-class BonusCalculator {
-  constructor(public base: number) {}
-
-  getBonus(employee: Employee): number {
-    if (employee.grade === 'junior') {
-      return Math.floor(this.base * 1.1);
-    } else if (employee.grade === 'middle') {
-      return Math.floor(this.base * 1.5);
-    } else {
-      return Math.floor(this.base * 2);
-    }
-  }
-}
-
-const run = () => {
-  const emp1 = new Employee('Yamada', 'junior');
-  const emp2 = new Employee('Suzuki', 'middle');
-  const emp3 = new Employee('Tanaka', 'senior');
-
-  const bonusCalculator = new BonusCalculator(1000);
-
-  console.log(bonusCalculator.getBonus(emp1));
-  console.log(bonusCalculator.getBonus(emp2));
-  console.log(bonusCalculator.getBonus(emp3));
-};
-
-run();
-
+const service = new NotificationService();
+service.notify('email', 'ようこそ！');
+service.notify('fax', '契約完了'); // faxが新しく追加されたが、まだ対応していない
 ```
 
-##### 実行結果
+- `fax`に対応するには、既存クラスを開いて書き換える必要がある
+- これは「修正に閉じていない」＝ OCP に違反している状態
 
-```
-1100
-1500
-2000
-```
 
-#### 仕様変更後
+## 解決策：通知手段を拡張できる設計にする
+
+インターフェースで通知手段を抽象化し、通知ごとにクラスを分離すれば、  
+新しい通知方式を追加しても既存コードを触らずに済みます。
 
 ```ts
-type Grade = 'junior' | 'middle' | 'senior' | 'expert';
-
-class Employee {
-  constructor(public namme: string, public grade: Grade) {}
+interface Notifier {
+  send(message: string): void;
 }
 
-class BonusCalculator {
-  constructor(public base: number) {}
-
-  getBonus(employee: Employee): number {
-    if (employee.grade === 'junior') {
-      return Math.floor(this.base * 1.1);
-    } else if (employee.grade === 'middle') {
-      return Math.floor(this.base * 1.5);
-    } else if (employee.grade === 'senior') { 👈 // すでに安定稼働している`getBonus()`メソッドを改変する必要が出てくる
-      return Math.floor(this.base * 2);
-    } else {
-      return Math.floor(this.base * 3); 👈
-    }
+class EmailNotifier implements Notifier {
+  send(message: string): void {
+    console.log(`メール送信: ${message}`);
   }
 }
 
-const run = () => {
-  const emp1 = new Employee('Yamada', 'junior');
-  const emp2 = new Employee('Suzuki', 'middle');
-  const emp3 = new Employee('Tanaka', 'senior');
-  const emp4 = new Employee('Sato', 'expert');
+class SMSNotifier implements Notifier {
+  send(message: string): void {
+    console.log(`SMS送信: ${message}`);
+  }
+}
 
-  const bonusCalculator = new BonusCalculator(1000);
+class PushNotifier implements Notifier {
+  send(message: string): void {
+    console.log(`プッシュ通知: ${message}`);
+  }
+}
 
-  console.log(bonusCalculator.getBonus(emp1));
-  console.log(bonusCalculator.getBonus(emp2));
-  console.log(bonusCalculator.getBonus(emp3));
-  console.log(bonusCalculator.getBonus(emp4));
-};
+class NotificationService {
+  constructor(private notifiers: Notifier[]) {}
 
-run();
-
+  notifyAll(message: string) {
+    this.notifiers.forEach((notifier) => notifier.send(message));
+  }
+}
 ```
 
-##### 実行結果
+### ✅ 利点
 
-```
-1100
-1500
-2000
-3000
-```
+- `FaxNotifier`を新規追加するだけで対応でき、既存のコードは一切変更しない
+- 新規拡張は「開かれて」いるが、既存の動作には「閉じて」いる状態
+- OCP（オープンクローズドの原則）を自然に満たしている
 
-### 解決策
-
-#### 仕様変更前
 ```ts
-iinterface IEmployee {
-  name: string;
-  getBonus(base: number): number;
-}
-
-class JuniorEmployee implements IEmployee {
-  constructor(public name: string) {}
-  getBonus(base: number): number {
-    return Math.floor(base * 1.1);
+class FaxNotifier implements Notifier {
+  send(message: string): void {
+    console.log(`FAX送信: ${message}`);
   }
 }
 
-class MiddleEmployee implements IEmployee {
-  constructor(public name: string) {}
-  getBonus(base: number): number {
-    return Math.floor(base * 1.5);
-  }
-}
+const service = new NotificationService([
+  new EmailNotifier(),
+  new SMSNotifier(),
+  new FaxNotifier(), // 新たに追加
+]);
 
-class SeniorEmployee implements IEmployee {
-  constructor(public name: string) {}
-  getBonus(base: number): number {
-    return Math.floor(base * 2);
-  }
-}
-
-const run = () => {
-  const emp1 = new JuniorEmployee('Yamada');
-  const emp2 = new MiddleEmployee('Suzuki');
-  const emp3 = new SeniorEmployee('Tanaka');
-
-  const base = 1000;
-  console.log(`${emp1.name}のボーナスは${emp1.getBonus(base)}`);
-  console.log(`${emp2.name}のボーナスは${emp2.getBonus(base)}`);
-  console.log(`${emp3.name}のボーナスは${emp3.getBonus(base)}`);
-};
-
-run();
-
+service.notifyAll('キャンペーンのお知らせ！');
 ```
-
-##### 実行結果
-```
-Yamadaのボーナスは1100
-Suzukiのボーナスは1500
-Tanakaのボーナスは2000
-```
-
-#### 仕様変更後
-```ts
-interface IEmployee {
-  name: string;
-  getBonus(base: number): number;
-}
-
-class JuniorEmployee implements IEmployee {
-  constructor(public name: string) {}
-  getBonus(base: number): number {
-    return Math.floor(base * 1.1);
-  }
-}
-
-class MiddleEmployee implements IEmployee {
-  constructor(public name: string) {}
-  getBonus(base: number): number {
-    return Math.floor(base * 1.5);
-  }
-}
-
-class SeniorEmployee implements IEmployee {
-  constructor(public name: string) {}
-  getBonus(base: number): number {
-    return Math.floor(base * 2);
-  }
-}
-
-class ExpertEmployee implements IEmployee {
-  constructor(public name: string) {}
-  getBonus(base: number): number {
-    return Math.floor(base * 3);
-  }
-}
-
-const run = () => {
-  const emp1 = new JuniorEmployee('Yamada');
-  const emp2 = new MiddleEmployee('Suzuki');
-  const emp3 = new SeniorEmployee('Tanaka');
-  const emp4 = new ExpertEmployee('Sato'); // 追加した機能以外の既存機能には何も修正を加えていない
-
-  const base = 1000;
-  console.log(`${emp1.name}のボーナスは${emp1.getBonus(base)}`);
-  console.log(`${emp2.name}のボーナスは${emp2.getBonus(base)}`);
-  console.log(`${emp3.name}のボーナスは${emp3.getBonus(base)}`);
-  console.log(`${emp4.name}のボーナスは${emp4.getBonus(base)}`);
-};
-
-run();
-
-```
-
-##### 実行結果
-```
-Yamadaのボーナスは1100
-Suzukiのボーナスは1500
-Tanakaのボーナスは2000
-Satoのボーナスは3000
-
-```
-
