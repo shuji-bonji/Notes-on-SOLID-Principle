@@ -2,8 +2,9 @@
 
 ## シナリオ
 
-あなたは既存のECサイトに新しい支払い方法やロイヤリティプログラムを追加する必要があります。
-コードベースはSOLID原則に従っておらず、機能追加が難しい状況です。
+あなたは既存のECサイトに新しい支払い方法やロイヤリティプログラムを追加する必要があります。  
+しかし現在のコードはSOLID原則に従っておらず、機能追加のたびに既存コードを変更しなければならず、保守性に課題があります。
+
 
 ## 非SOLIDなコード（Before）
 
@@ -17,31 +18,28 @@ class Order {
   processPayment(paymentType: string) {
     if (paymentType === 'credit') {
       console.log('クレジットカード処理');
-      // クレジットカード処理のロジック
     } else if (paymentType === 'bank') {
       console.log('銀行振込処理');
-      // 銀行振込処理のロジック
     }
     // 新しい支払い方法を追加するたびにこのメソッドを変更する必要がある
   }
   
   // ポイント計算
   calculatePoints() {
-    // 通常会員のポイント計算ロジック
     return this.totalPrice * 0.01;
   }
   
   // 注文確認メール送信
   sendConfirmationEmail() {
     console.log('注文確認メール送信');
-    // メール送信ロジック
   }
 }
 ```
 
-## リファクタリング：SOLIDに準拠（After）
 
-### 単一責任の原則を適用
+## SOLID原則に準拠したリファクタリング（After）
+
+### ✅ 単一責任の原則（SRP）
 
 ```ts
 class Order {
@@ -69,7 +67,7 @@ class PointsCalculator {
 }
 ```
 
-### オープンクローズドとリスコフの置換原則を適用
+### ✅ オープンクローズド原則（OCP）＋リスコフの置換原則（LSP）
 
 ```ts
 interface PaymentMethod {
@@ -88,7 +86,6 @@ class BankTransferPayment implements PaymentMethod {
   }
 }
 
-// 新しい支払い方法を追加しても既存コードは変更不要
 class PayPalPayment implements PaymentMethod {
   process(order: Order): void {
     console.log('PayPal処理');
@@ -104,7 +101,7 @@ class PaymentProcessor {
 }
 ```
 
-### インターフェース分離原則を適用
+### ✅ インターフェース分離の原則（ISP）
 
 ```ts
 interface PointsCalculator {
@@ -113,18 +110,18 @@ interface PointsCalculator {
 
 class RegularCustomerPoints implements PointsCalculator {
   calculatePoints(amount: number): number {
-    return amount * 0.01; // 1%
+    return amount * 0.01;
   }
 }
 
 class PremiumCustomerPoints implements PointsCalculator {
   calculatePoints(amount: number): number {
-    return amount * 0.05; // 5%
+    return amount * 0.05;
   }
 }
 ```
 
-### 依存性逆転の原則を適用
+### ✅ 依存性逆転の原則（DIP）
 
 ```ts
 class OrderService {
@@ -133,17 +130,19 @@ class OrderService {
     private emailService: EmailService,
     private pointsCalculator: PointsCalculator
   ) {}
-  
-  completeOrder(order: Order, paymentType: string) {
-    // 高レベルの処理フロー
-    // 低レベルのモジュールに直接依存せず、抽象に依存
+
+  completeOrder(order: Order) {
+    this.paymentProcessor.processPayment(order);
+    this.emailService.sendConfirmationEmail(order);
+    const points = this.pointsCalculator.calculatePoints(order.totalPrice);
+    console.log(`ポイント付与: ${points}pt`);
   }
 }
 ```
 
-## 利点
+## ✅ この設計の利点
 
-- 新しい支払い方法の追加が容易に
-- 会員ランクによって異なるポイント計算が可能に
-- テストが容易に（モック化が簡単）
-- 責任が明確で、コードの理解が容易に
+- 支払い手段の追加・変更がクラス追加のみで可能（OCP）
+- ポイント計算方式の変更が柔軟に（ISP）
+- テスト容易（依存オブジェクトをモック注入できる）（DIP）
+- 各クラスが1つの責任に集中し、保守性が高い（SRP）
