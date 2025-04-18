@@ -42,6 +42,30 @@ SOLID原則を適用することで、以下のような問題を解決できま
 - **リスコフの置換原則**は**オープンクローズドの原則**を支え、拡張性の高いコードを実現します
 - **インターフェース分離の原則**と**依存性逆転の原則**は互いに補完し合い、疎結合なモジュール設計を促進します
 
+### SOLID原則の関連性
+
+```mermaid
+graph TD
+    S[単一責任の原則] --> O[オープンクローズドの原則]
+    L[リスコフの置換原則] --> O
+    I[インターフェース分離の原則] --> D[依存性逆転の原則]
+    D --> O
+    
+    subgraph "高凝集"
+        S
+    end
+    
+    subgraph "拡張性"
+        O
+        L
+    end
+    
+    subgraph "疎結合"
+        I
+        D
+    end
+```
+
 ## 学習を深めるためのリソース
 
 - [Clean Architecture: A Craftsman's Guide to Software Structure and Design](https://www.amazon.co.jp/dp/0134494164) - Robert C. Martin著
