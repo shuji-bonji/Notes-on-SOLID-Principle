@@ -48,14 +48,14 @@ class ReportManager {
 }
 ```
 ```mermaid
-graph LR
-  A[ビジネス部門] --> P[Printer]
-  B[DBA] --> F[FileSaver]
-  C[運用担当] --> E[EmailSender]
+graph LR;
+  A[ビジネス部門] --> P[Printer];
+  B[DBA] --> F[FileSaver];
+  C[運用担当] --> E[EmailSender];
 
-  P -->|uses| R[ReportManager]
-  F -->|uses| R
-  E -->|uses| R
+  P -->|uses| R[ReportManager];
+  F -->|uses| R;
+  E -->|uses| R;
 ```
 
 これは「1クラスが3つのアクターに責任を持っている」ので SRP違反 です。  

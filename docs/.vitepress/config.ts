@@ -1,7 +1,8 @@
 // docs/.vitepress/config.ts
 import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid';
 
-export default defineConfig({
+export default withMermaid({
   title: 'SOLIDの原則',
   description: 'TypeScriptで学ぶSOLID原則',
   base: '/Notes-on-SOLID-Principle/',

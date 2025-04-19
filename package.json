@@ -25,5 +25,9 @@
   "homepage": "https://github.com/shuji-bonji/Notes-on-SOLID-Principle#readme",
   "devDependencies": {
     "vitepress": "^1.6.3"
+  },
+  "dependencies": {
+    "mermaid": "^11.6.0",
+    "vitepress-plugin-mermaid": "^2.0.17"
   }
 }
