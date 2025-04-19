@@ -1,4 +1,4 @@
-# リスコフの置換原則
+# リスコフの置換原則 (Liskov Substitution Principle)
 
 ## リスコフの置換原則とは
 

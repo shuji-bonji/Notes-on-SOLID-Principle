@@ -1,4 +1,4 @@
-# 依存性逆転の原則
+# 依存性逆転の原則 (Dependency Inversion Principle)
 
 ## 依存性逆転の原則とは
 

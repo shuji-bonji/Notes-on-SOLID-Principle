@@ -1,4 +1,4 @@
-# インターフェース分離の原則
+# インターフェース分離の原則 (Interface Segregation Principle)
 
 ## インターフェース分離の原則とは
 
