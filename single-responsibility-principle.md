@@ -13,50 +13,70 @@
 
 ## なぜ「アクター」の観点が重要か？
 
-Robert C. Martin（提唱者）の原文ではこう言われています。
+単一責任の原則は、しばしば「クラスは1つの責任しか持つべきでない」と表現されますが、  
+この「責任」とは誰のためのものか、という**「アクター」**の視点が本質になります。
+
+Robert C. Martin（提唱者）は次のように述べています。
 
 > “A class should have only one reason to change.”
-（クラスには変更理由がひとつだけであるべき）
+> クラスには変更理由がひとつだけであるべき
 
-ここでの「理由」とは アクター（責任を要求する人、つまり変更理由） のことを意味しています。
+この「変更理由」とは、**そのクラスに変更を求める人や立場＝アクター**を意味します。
+
 
 ### アクターとは？
 
-アクターとは「そのクラスの変更を要求する主体」のことです。  
-システムを利用するユーザーだけでなく、開発・保守を行う運用者や管理者、外部インターフェースの仕様策定者なども含まれます。
+アクターとは「そのクラスの変更を要求する主体」です。クラスの振る舞いや構造に対して**変更を要求し得る主体**を指します。  
+つまり「そのクラスを利用している者（人・モジュール・他のシステム）」と言い換えることもできます。  
+システムを利用するユーザーだけでなく、開発・保守を行う運用者や管理者、外部インターフェースの仕様策定者なども含まれます。  
+たとえば、以下のようなものが該当します。
 
-たとえば、以下のようなものがアクターとなり得ます。
+- **ビジネスアクター**：経営層・営業部門・顧客など、ビジネス要件の変更を要求する人々
+- **技術的アクター**：DBA・運用担当・開発者など、技術的・実装上の理由で変更を要求する人々
+- **外部システム**：APIの利用者、他のクラスやモジュールなど、インターフェースの変更を要求し得るもの
+- **規格・ルール**：法制度やドメインルールなど、外部の制約により変更を強いる存在
 
-- 経営層（売上レポートの形式変更を要求）
-- DBA（データベース保存仕様の変更を要求）
-- インフラ運用担当（メール送信サーバの変更を要求）
-- エンドユーザー（UIや出力内容の変更を希望）
+これらが1つのクラスに混在すると、**変更理由が複数になり、保守が困難になる**のです。
 
-クラスが複数のアクターに対応していると、それぞれのアクターによる変更要求が互いに干渉し、保守性が下がります。  
-このため「1クラス＝1アクターへの責任」とするのが単一責任の原則の本質です。
+### 🔎 例：SRP違反の構造
 
-> 💡 アクターとは、そのクラスを利用する「人・システム・他のクラス」など、  
-> クラスの振る舞いや構造に対して**変更を要求し得る主体**を指します。  
-> つまり「そのクラスを利用している者（人・モジュール・他のシステム）」と言い換えることもできます。
-
-### たとえば
-
-```
+```ts
 class ReportManager {
-  generateReport()  // 経営層が求める機能
-  saveToDatabase()  // DBAが関心を持つ処理
-  sendEmail()       // 通信インフラ担当が関わる部分
+  generateReport()  // 経営層
+  saveToDatabase()  // DBA
+  sendEmail()       // 運用担当
 }
 ```
+```mermaid
+graph LR
+  A[ビジネス部門] --> P[Printer]
+  B[DBA] --> F[FileSaver]
+  C[運用担当] --> E[EmailSender]
+
+  P -->|uses| R[ReportManager]
+  F -->|uses| R
+  E -->|uses| R
+```
+
 これは「1クラスが3つのアクターに責任を持っている」ので SRP違反 です。  
 各機能を別クラスに分離するのが望ましい設計です。
+
 
 
 
 ## 単一責任に違反している例
 
 以下は、レポートを印刷・保存・送信する処理を1つのクラスに詰め込んだ例です。
-
+#### クラス図
+```mermaid
+classDiagram
+  class ReportManager {
+    +print()
+    +saveToFile()
+    +sendEmail()
+  }
+```
+#### コード
 ```ts
 class ReportManager {
   constructor(private title: string, private content: string) {}
@@ -75,6 +95,7 @@ class ReportManager {
 }
 ```
 
+
 ### 問題点
 
 - `print()` → プリンタ担当者の責任
@@ -83,6 +104,16 @@ class ReportManager {
 
 アクターが異なる処理が1つのクラスに混在しており、単一責任の原則に違反しています。
 
+## 状態（フィールド）も責任に含まれる
+
+単一責任の原則は「メソッド（処理）」だけでなく、「フィールド（状態）」にも関係します。  
+たとえば、あるクラスがレポートの内容とメール送信先の設定を同時に保持している場合、  
+それぞれが異なるアクターの責任領域であれば、分離すべき設計かもしれません。
+
+- レポートの内容 → ビジネスアクター（営業部など）の関心
+- メール送信先 → 運用やインフラ担当の関心
+
+このように、**データ構造が異なるアクターに属する場合もSRP違反**となり得ます。
 
 ## 原則に違反するとどうなるか
 
@@ -117,7 +148,32 @@ class ReportManager {
 ```
 
 ## 解決策：責任を分離する
+#### クラス図
+```mermaid
+classDiagram
+  class Report {
+    +title: string
+    +content: string
+  }
 
+  class Printer {
+    +print(report: Report)
+  }
+
+  class FileSaver {
+    +save(report: Report)
+  }
+
+  class EmailSender {
+    +send(report: Report)
+  }
+
+  Report <.. Printer : uses
+  Report <.. FileSaver : uses
+  Report <.. EmailSender : uses
+```
+
+#### コード
 ```ts
 class Report {
   constructor(public title: string, public content: string) {}
@@ -142,6 +198,15 @@ class EmailSender {
 }
 ```
 
+
+## 責任の分離の判断基準（リファクタリング時の指針）
+
+以下のような視点を持つと、クラスの責任が複数あるかを判断しやすくなります。
+
+- メソッドごとに「これは誰のための処理か？」と問い直す
+- 異なるアクターが関心を持つメソッドが混在していたら、分離の検討をする
+- フィールドとメソッドが密接に関係している単位で、新しいクラスに抽出する
+
 ### 実行例
 
 ```ts
@@ -165,6 +230,23 @@ DRY（Don’t Repeat Yourself）原則は「同じコードやロジックを繰
 
 「同じ処理をしているから」といって、**異なる責任を持つ処理を1つの関数やクラスにまとめる**のは危険です。
 
+#### クラス図
+```mermaid
+classDiagram
+  class Report {
+    +title: string
+  }
+
+  class ReportManager {
+    +print(report: Report)
+    +save(report: Report)
+    +send(report: Report)
+    -log(action: string)
+  }
+
+  Report <.. ReportManager : uses
+```
+#### コード
 ```ts
 class ReportManager {
   print(report: Report) {
@@ -194,7 +276,41 @@ class ReportManager {
 
 
 ### ✅ 正しい構成例：責任の分離
+#### クラス図
+```mermaid
+classDiagram
+  class Report {
+    +title: string
+  }
 
+  class Logger {
+    +log(action: string)
+  }
+
+  class Printer {
+    -logger: Logger
+    +print(report: Report)
+  }
+
+  class FileSaver {
+    -logger: Logger
+    +save(report: Report)
+  }
+
+  class EmailSender {
+    -logger: Logger
+    +send(report: Report)
+  }
+
+  Logger <|-- Printer
+  Logger <|-- FileSaver
+  Logger <|-- EmailSender
+  Report <.. Printer : uses
+  Report <.. FileSaver : uses
+  Report <.. EmailSender : uses
+```
+
+#### コード
 ```ts
 class Report {
   constructor(public title: string) {}
@@ -235,6 +351,8 @@ class EmailSender {
 }
 ```
 
+
+
 #### 実行例
 
 ```ts
@@ -250,10 +368,44 @@ saver.save(report);
 sender.send(report);
 ```
 
-このように「ログ出力の責任」を `Logger` クラスに分離し、他のクラスは自身の本来の責任（印刷・保存・送信）に集中することで、  
-**SRPに準拠しつつ、DRYも保たれる**設計になります。
+## 補足：インターフェースを使った責任の分離（TypeScript）
 
-### 📝 まとめ
+TypeScriptでは、異なるアクターの責任をインターフェースとして分離することで、  
+役割ごとの設計がしやすくなります。
+#### クラス図
+```mermaid
+classDiagram
+  class Printable {
+    +print(report: Report)
+  }
 
-- DRYとSRPはどちらも重要ですが、**優先すべきはSRP（責任の分離）**です
-- まず「その処理は誰の責任か？」を明確にしましょう
+  class Saveable {
+    +save(report: Report)
+  }
+
+  class Emailable {
+    +send(report: Report)
+  }
+
+  class Report {
+    +title: string
+    +content: string
+  }
+```
+#### コード
+```ts
+interface Printable {
+  print(report: Report): void;
+}
+
+interface Saveable {
+  save(report: Report): void;
+}
+
+interface Emailable {
+  send(report: Report): void;
+}
+```
+
+これらを実装するクラスは、単一のインターフェース（＝単一責任）を持つことになります。  
+この設計は、後に学ぶ「インターフェース分離の原則（ISP）」にもつながります。

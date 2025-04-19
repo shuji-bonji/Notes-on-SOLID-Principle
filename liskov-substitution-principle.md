@@ -5,10 +5,9 @@
 サブタイプは、そのスーパータイプと置換可能でなければならない  
 - **正しい継承 = 「Is-a 関係」+「振る舞いの同等性」**
 
-
+#### クラス図
 ```mermaid
 classDiagram
-  direction TB
   class SuperType {
 
   }
@@ -24,6 +23,25 @@ classDiagram
 たとえば、`Bird` クラスを継承した `Penguin` クラスがあるとします。  
 `Bird` クラスには `fly()` メソッドがあり、すべての鳥が飛べる前提です。
 
+#### クラス図
+```mermaid
+classDiagram
+  class Bird {
+    +fly()
+  }
+
+  class Sparrow {
+    +fly()
+  }
+
+  class Penguin {
+    +fly()
+  }
+
+  Bird <|-- Sparrow
+  Bird <|-- Penguin
+```
+#### コード
 ```ts
 class Bird {
   fly(): void {
@@ -42,7 +60,6 @@ class Penguin extends Bird {}
 - `Bird` 型で受け取って `fly()` を呼ぶと、`Penguin` では意図しない動作や例外が発生するかもしれません。
 - この設計は **「型の置き換えができない」＝リスコフの置換原則違反** です。
 
-
 ## 原則に違反するとどうなるか
 
 ```ts
@@ -57,12 +74,34 @@ makeItFly(penguin); // 👈 ここで誤動作、またはエラーの可能性
 - 利用者は「Birdならばflyできる」と信じて使っているのに、
 - 実際には `Penguin` が `fly()` を正しく扱えないためバグの原因になります。
 
-
 ## 解決策：共通の動作に着目したインターフェースを使う
 
 「飛べる」かどうかに注目した設計に変えましょう。  
 つまり、「鳥＝飛ぶもの」という前提ではなく、「飛べる鳥」と「飛べない鳥」を分けて扱うようにします。
+#### クラス図
 
+```mermaid
+classDiagram
+  class Flyer {
+    <<interface>>
+    +fly()
+  }
+
+  class Bird {
+  }
+
+  class Sparrow {
+    +fly()
+  }
+
+  class Penguin {
+  }
+
+  Bird <|-- Sparrow
+  Bird <|-- Penguin
+  Flyer <|.. Sparrow
+```
+#### コード
 ```ts
 interface Flyer {
   fly(): void;
@@ -82,6 +121,8 @@ class Penguin extends Bird {
   // fly() は実装しない
 }
 ```
+
+
 
 このようにすれば、`Flyer` 型に対してのみ `fly()` を呼び出せるようになるため、  
 **置き換え可能な設計＝リスコフの置換原則に準拠した設計**になります。
@@ -104,7 +145,7 @@ class Penguin extends Bird {
 
 スーパータイプとサブタイプで振る舞いが変更されていることを確認する最も簡単な方法は**単体テストを書く**こと
 
-#### 利用する側（テスト対象）
+#### コード
 ```ts
 export const f = (r: Rectangle, wight: number, height: number): number => {
   r.setWidth(wight);
@@ -124,7 +165,6 @@ describe('Rectangle Test', () => {
     expect(f(r1, 3, 4)).toBe(12); // 👈 16となり、テストに失敗する
   });
 });
-
 ```
 
 ## 補足： 契約による設計
@@ -158,7 +198,6 @@ classDiagram
 
 - サブタイプの**事前条件はスーパータイプと同じかそれより弱い条件**と置き換え、
 - サブタイプの**事後条件はスーパータイプと同じかそれより強い条件**と置き換える。
-
 
 ###  事前条件はスーパータイプと同じかそれより弱い条件
 
@@ -199,8 +238,8 @@ setWidth(width: nubmer) {
 }
 ```
 
-
 ## TyepScriptコード例
+#### クラス図
 
 ### 違反例
 ```mermaid
@@ -224,6 +263,7 @@ classDiagram
   Rectangle <|-- Square
 ```
 
+#### コード
 ```ts
 // スーパータイプ
 export class Rectangle {
@@ -265,8 +305,6 @@ const run = () => {
 };
 
 run();
-
-
 ```
 
 ##### 実行結果
@@ -291,8 +329,8 @@ describe('Rectangle Test', () => {
     expect(f(r1, 3, 4)).toBe(12); // 👈 16となり、テストに失敗する
   });
 });
-
 ```
+
 ##### 実行結果
 
 ```
@@ -300,6 +338,7 @@ TestSuites: 1 failed, 1 total
 ```
 
 ### 解決策
+#### クラス図
 
 ```mermaid
 classDiagram
@@ -325,6 +364,7 @@ classDiagram
   Shape <|.. Square
 ```
 
+#### コード
 ```ts
 interface Shape {
   getArea(): number;
@@ -369,8 +409,9 @@ const run = () => {
 };
 
 run();
-
 ```
+
+
 
 ##### 実行結果
 

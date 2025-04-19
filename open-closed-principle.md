@@ -18,6 +18,14 @@
 たとえば「アプリ通知システム」を考えてみましょう。  
 ユーザーに対して様々な方法で通知を送る仕組みです。
 
+#### クラス図
+```mermaid
+classDiagram
+  class NotificationService {
+    +notify(type: string, message: string)
+  }
+```
+#### コード
 ```ts
 class NotificationService {
   notify(type: string, message: string) {
@@ -31,6 +39,7 @@ class NotificationService {
   }
 }
 ```
+
 
 ### ❌ 問題点（原則に違反）
 
@@ -53,6 +62,40 @@ service.notify('fax', '契約完了'); // faxが新しく追加されたが、�
 
 インターフェースで通知手段を抽象化し、通知ごとにクラスを分離すれば、  
 新しい通知方式を追加しても既存コードを触らずに済みます。
+
+#### クラス図
+
+```mermaid
+classDiagram
+  class Notifier {
+    <<interface>>
+    +send(message: string)
+  }
+
+  class EmailNotifier {
+    +send(message: string)
+  }
+
+  class SMSNotifier {
+    +send(message: string)
+  }
+
+  class PushNotifier {
+    +send(message: string)
+  }
+
+  class NotificationService {
+    -notifiers: Notifier[]
+    +notifyAll(message: string)
+  }
+
+  Notifier <|.. EmailNotifier
+  Notifier <|.. SMSNotifier
+  Notifier <|.. PushNotifier
+  NotificationService --> Notifier : uses
+```
+
+#### コード
 
 ```ts
 interface Notifier {
@@ -86,12 +129,24 @@ class NotificationService {
 }
 ```
 
+
 ### ✅ 利点
 
 - `FaxNotifier`を新規追加するだけで対応でき、既存のコードは一切変更しない
 - 新規拡張は「開かれて」いるが、既存の動作には「閉じて」いる状態
 - OCP（オープンクローズドの原則）を自然に満たしている
 
+#### クラス図
+```mermaid
+classDiagram
+  class FaxNotifier {
+    +send(message: string)
+  }
+
+  Notifier <|.. FaxNotifier
+```
+
+#### コード
 ```ts
 class FaxNotifier implements Notifier {
   send(message: string): void {
@@ -107,6 +162,7 @@ const service = new NotificationService([
 
 service.notifyAll('キャンペーンのお知らせ！');
 ```
+
 
 ## 実務で役立つヒント
 

@@ -7,7 +7,19 @@
 
 
 ## 非SOLIDなコード（Before）
-
+#### クラス図
+```mermaid
+classDiagram
+  class Order {
+    +items
+    +totalPrice
+    +userId
+    +processPayment(paymentType)
+    +calculatePoints()
+    +sendConfirmationEmail()
+  }
+```
+#### コード
 ```ts
 class Order {
   items = [];
@@ -37,10 +49,36 @@ class Order {
 ```
 
 
+
 ## SOLID原則に準拠したリファクタリング（After）
 
 ### ✅ 単一責任の原則（SRP）
+#### クラス図
+```mermaid
+classDiagram
+  class Order {
+    +items
+    +totalPrice
+    +userId
+  }
 
+  class PaymentProcessor {
+    +processPayment(order, paymentType)
+  }
+
+  class EmailService {
+    +sendConfirmationEmail(order)
+  }
+
+  class PointsCalculator {
+    +calculatePoints(order)
+  }
+
+  PaymentProcessor --> Order
+  EmailService --> Order
+  PointsCalculator --> Order
+```
+#### コード
 ```ts
 class Order {
   items = [];
@@ -67,8 +105,42 @@ class PointsCalculator {
 }
 ```
 
-### ✅ オープンクローズド原則（OCP）＋リスコフの置換原則（LSP）
 
+
+### ✅ オープンクローズド原則（OCP）＋リスコフの置換原則（LSP）
+#### クラス図
+```mermaid
+classDiagram
+  class Order
+
+  class PaymentMethod {
+    <<interface>>
+    +process(order)
+  }
+
+  class CreditCardPayment {
+    +process(order)
+  }
+
+  class BankTransferPayment {
+    +process(order)
+  }
+
+  class PayPalPayment {
+    +process(order)
+  }
+
+  class PaymentProcessor {
+    -paymentMethod: PaymentMethod
+    +processPayment(order)
+  }
+
+  PaymentMethod <|.. CreditCardPayment
+  PaymentMethod <|.. BankTransferPayment
+  PaymentMethod <|.. PayPalPayment
+  PaymentProcessor --> PaymentMethod
+```
+#### コード
 ```ts
 interface PaymentMethod {
   process(order: Order): void;
@@ -101,7 +173,30 @@ class PaymentProcessor {
 }
 ```
 
+
 ### ✅ インターフェース分離の原則（ISP）
+
+#### クラス図
+```mermaid
+classDiagram
+  class PointsCalculator {
+    <<interface>>
+    +calculatePoints(amount)
+  }
+
+  class RegularCustomerPoints {
+    +calculatePoints(amount)
+  }
+
+  class PremiumCustomerPoints {
+    +calculatePoints(amount)
+  }
+
+  PointsCalculator <|.. RegularCustomerPoints
+  PointsCalculator <|.. PremiumCustomerPoints
+```
+
+#### コード
 
 ```ts
 interface PointsCalculator {
@@ -121,8 +216,29 @@ class PremiumCustomerPoints implements PointsCalculator {
 }
 ```
 
-### ✅ 依存性逆転の原則（DIP）
 
+### ✅ 依存性逆転の原則（DIP）
+#### クラス図
+```mermaid
+classDiagram
+  class Order
+  class PaymentProcessor
+  class EmailService
+  class PointsCalculator
+
+  class OrderService {
+    -paymentProcessor: PaymentProcessor
+    -emailService: EmailService
+    -pointsCalculator: PointsCalculator
+    +completeOrder(order)
+  }
+
+  OrderService --> PaymentProcessor
+  OrderService --> EmailService
+  OrderService --> PointsCalculator
+```
+
+#### コード
 ```ts
 class OrderService {
   constructor(
@@ -139,6 +255,7 @@ class OrderService {
   }
 }
 ```
+
 
 ## ✅ この設計の利点
 

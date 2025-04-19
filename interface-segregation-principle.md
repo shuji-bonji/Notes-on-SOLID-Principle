@@ -13,7 +13,34 @@
 
 たとえば「多機能プリンタ」を考えてみましょう。  
 印刷・スキャン・FAX の機能をすべて持つ `MultiFunctionDevice` インターフェースを定義し、それをすべてのプリンタに強制している例です。
+#### クラス図
 
+```mermaid
+classDiagram
+  class MultiFunctionDevice {
+    <<interface>>
+    +print()
+    +scan()
+    +fax()
+  }
+
+  class AllInOnePrinter {
+    +print()
+    +scan()
+    +fax()
+  }
+
+  class SimplePrinter {
+    +print()
+    +scan()
+    +fax()
+  }
+
+  MultiFunctionDevice <|.. AllInOnePrinter
+  MultiFunctionDevice <|.. SimplePrinter
+```
+
+#### コード
 ```ts
 interface MultiFunctionDevice {
   print(): void;
@@ -33,6 +60,7 @@ class SimplePrinter implements MultiFunctionDevice {
   fax()  { throw new Error('このプリンタはFAXできません'); }
 }
 ```
+
 
 ### ❌ 問題点
 
@@ -56,6 +84,42 @@ printer.scan(); // 実行時にエラー
 
 ## 解決策：機能ごとにインターフェースを分割する
 
+#### クラス図
+
+```mermaid
+classDiagram
+  class Printer {
+    <<interface>>
+    +print()
+  }
+
+  class Scanner {
+    <<interface>>
+    +scan()
+  }
+
+  class Fax {
+    <<interface>>
+    +fax()
+  }
+
+  class AllInOnePrinter {
+    +print()
+    +scan()
+    +fax()
+  }
+
+  class SimplePrinter {
+    +print()
+  }
+
+  Printer <|.. AllInOnePrinter
+  Scanner <|.. AllInOnePrinter
+  Fax <|.. AllInOnePrinter
+  Printer <|.. SimplePrinter
+```
+
+#### コード
 ```ts
 interface Printer {
   print(): void;
@@ -83,60 +147,3 @@ class SimplePrinter implements Printer {
 このように分離することで、「必要な機能だけ」を実装し、「必要なインターフェースだけ」に依存できるようになります。
 
 → インターフェース分離の原則に準拠した設計になります。
-
-## TypeScript
-
-### 違反例
-
-```ts
-interface MultiFunctionDevice {
-  print(): void;
-  scan(): void;
-  fax(): void;
-}
-
-class AllInOnePrinter implements MultiFunctionDevice {
-  print() { console.log('印刷しました'); }
-  scan() { console.log('スキャンしました'); }
-  fax()  { console.log('FAXを送信しました'); }
-}
-
-class SimplePrinter implements MultiFunctionDevice {
-  print() { console.log('印刷しました'); }
-  scan() { throw new Error('このプリンタはスキャンできません'); }
-  fax()  { throw new Error('このプリンタはFAXできません'); }
-}
-```
-
-### 改善例
-
-```ts
-interface Printer {
-  print(): void;
-}
-
-interface Scanner {
-  scan(): void;
-}
-
-interface Fax {
-  fax(): void;
-}
-
-class AllInOnePrinter implements Printer, Scanner, Fax {
-  print() { console.log('印刷しました'); }
-  scan()  { console.log('スキャンしました'); }
-  fax()   { console.log('FAXを送信しました'); }
-}
-
-class SimplePrinter implements Printer {
-  print() { console.log('印刷しました'); }
-}
-```
-
-##### 実行結果
-
-```
-印刷しました
-印刷しました
-```

@@ -9,6 +9,23 @@
 
 たとえば、`OrderService` が `CreditCardPayment` に直接依存している場合を考えます。
 
+#### クラス図
+
+```mermaid
+classDiagram
+  class CreditCardPayment {
+    +pay(amount: number)
+  }
+
+  class OrderService {
+    -payment: CreditCardPayment
+    +processOrder(amount: number)
+  }
+
+  OrderService --> CreditCardPayment : depends on
+```
+
+#### コード
 ```ts
 class CreditCardPayment {
   pay(amount: number): void {
@@ -24,6 +41,7 @@ class OrderService {
   }
 }
 ```
+
 
 ### ❌ 問題点
 
@@ -44,6 +62,35 @@ class PayPalPayment {
 
 ## 解決策：抽象に依存する
 
+
+#### クラス図
+
+```mermaid
+classDiagram
+  class PaymentMethod {
+    <<interface>>
+    +pay(amount: number)
+  }
+
+  class CreditCardPayment {
+    +pay(amount: number)
+  }
+
+  class PayPalPayment {
+    +pay(amount: number)
+  }
+
+  class OrderService {
+    -payment: PaymentMethod
+    +processOrder(amount: number)
+  }
+
+  PaymentMethod <|.. CreditCardPayment
+  PaymentMethod <|.. PayPalPayment
+  OrderService --> PaymentMethod : depends on
+```
+
+#### コード
 ```ts
 interface PaymentMethod {
   pay(amount: number): void;
