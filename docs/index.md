@@ -18,7 +18,3 @@ title: SOLIDの原則
 ## 🛠 ケーススタディ
 
 - [ECサイトの責務分離と拡張設計](./practical-case-studies.md)
-
----
-
-このドキュメントは [shuji-bonji/Notes-on-SOLID-Principle](https://github.com/shuji-bonji/Notes-on-SOLID-Principle) にて公開・管理されています。

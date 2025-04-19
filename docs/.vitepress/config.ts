@@ -5,6 +5,8 @@ export default defineConfig({
   title: 'SOLIDの原則',
   description: 'TypeScriptで学ぶSOLID原則',
   base: '/Notes-on-SOLID-Principle/',
+  lang: 'ja',
+  
   themeConfig: {
     nav: [
       { text: 'ホーム', link: '/' },
@@ -27,6 +29,21 @@ export default defineConfig({
           { text: 'ECサイト機能拡張', link: '/practical-case-studies' }
         ]
       }
-    ]
+    ],
+    socialLinks: [
+      {
+        icon: 'github',
+        link: 'https://github.com/shuji-bonji/Notes-on-SOLID-Principle',
+      },
+    ],
+
+    search: {
+      provider: 'local',
+    },
+
+    footer: {
+      message: 'Released under the CC-BY-4.0 license.',
+      copyright: 'Copyright © 2025-present',
+    },
   }
 })
