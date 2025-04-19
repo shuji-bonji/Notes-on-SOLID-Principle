@@ -3,13 +3,16 @@ title: SOLIDの原則
 ---
 
 
-# 📘SOLIDの原則
-SOLID原則を具体例と共に解説し、実践的な理解を促すことを目的としています。
 
+# 📘SOLIDの原則
+このサイトは、SOLID原則を具体例と共に解説し、実践的な理解を促すことを目的としています。
 
 - [SOLIDの原則とは？](solid-principles.md)
 
-## 🔎 各原則の一覧
+<img src="/images/solid.svg" alt="SOLIDの図" style="width: 290px; height: 210px; margin:auto;"/>
+
+
+### 🔎 各原則の一覧
 
 - [単一責任の原則（SRP）](./single-responsibility-principle.md)
 - [オープンクローズドの原則（OCP）](./open-closed-principle.md)

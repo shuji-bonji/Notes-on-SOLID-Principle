@@ -5,6 +5,8 @@ SOLIDの原則についての覚書です。TypeScriptによるサンプルコ�
 
 - [SOLIDの原則とは](solid-principles.md)
 
+<img src="docs/public/images/solid.svg" alt="SOLIDの図" style="width: 290px; height: 210px; margin:auto;"/>
+
 ## 📑 各原則へのリンク
 
 - [S: **S**ingle Responsibility Principle - 単一責任の原則](docs/single-responsibility-principle.md)
