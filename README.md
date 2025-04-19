@@ -3,7 +3,7 @@ SOLIDの原則についての覚書です。TypeScriptによるサンプルコ�
 ## 📘 このリポジトリについて
 本リポジトリは、SOLID原則を具体例と共に解説し、実践的な理解を促すことを目的としています。
 
-- [SOLID原則とは](solid-principles.md)
+- [SOLIDの原則とは](solid-principles.md)
 
 ## 📑 各原則へのリンク
 
