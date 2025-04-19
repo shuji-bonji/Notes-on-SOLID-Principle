@@ -1,0 +1,32 @@
+// docs/.vitepress/config.ts
+import { defineConfig } from 'vitepress'
+
+export default defineConfig({
+  title: 'SOLIDの原則',
+  description: 'TypeScriptで学ぶSOLID原則',
+  base: '/Notes-on-SOLID-Principle/',
+  themeConfig: {
+    nav: [
+      { text: 'ホーム', link: '/' },
+    ],
+    sidebar: [
+      {
+        text: 'SOLID原則',
+        items: [
+          { text: 'SOLIDの原則とは', link: '/solid-principles' },
+          { text: '単一責任の原則', link: '/single-responsibility-principle' },
+          { text: 'オープンクローズドの原則', link: '/open-closed-principle' },
+          { text: 'リスコフの置換原則', link: '/liskov-substitution-principle' },
+          { text: 'インターフェース分離の原則', link: '/interface-segregation-principle' },
+          { text: '依存性逆転の原則', link: '/dependency-inversion-principle' },
+        ]
+      },
+      {
+        text: 'ケーススタディ',
+        items: [
+          { text: 'ECサイト機能拡張', link: '/practical-case-studies' }
+        ]
+      }
+    ]
+  }
+})

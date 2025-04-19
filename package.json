@@ -1,0 +1,29 @@
+{
+  "name": "notes-on-solid-principle",
+  "version": "1.0.0",
+  "description": "SOLIDの原則についての覚書です。TypeScriptによるサンプルコード付きで解説しています。  ## 📘 このリポジトリについて 本リポジトリは、SOLID原則を具体例と共に解説し、実践的な理解を促すことを目的としています。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shuji-bonji/Notes-on-SOLID-Principle.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/shuji-bonji/Notes-on-SOLID-Principle/issues"
+  },
+  "homepage": "https://github.com/shuji-bonji/Notes-on-SOLID-Principle#readme",
+  "devDependencies": {
+    "vitepress": "^1.6.3"
+  }
+}
