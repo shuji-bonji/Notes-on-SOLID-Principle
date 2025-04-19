@@ -30,8 +30,6 @@ class OrderService {
 - `OrderService` が `CreditCardPayment` に強く依存しており、他の支払い方法を使いたくなったときに書き換えが必要になる
 - 単体テスト時に支払い部分を差し替えられない
 
----
-
 ## 原則に違反するとどうなるか
 
 ```ts
@@ -43,8 +41,6 @@ class PayPalPayment {
 
 // OrderService 側で直接PayPalPaymentに書き換える必要がある
 ```
-
----
 
 ## 解決策：抽象に依存する
 

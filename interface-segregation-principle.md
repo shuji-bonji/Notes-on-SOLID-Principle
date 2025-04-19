@@ -80,8 +80,7 @@ class SimplePrinter implements Printer {
 }
 ```
 
-このように分離することで、  
-「必要な機能だけ」を実装し、「必要なインターフェースだけ」に依存できるようになります。
+このように分離することで、「必要な機能だけ」を実装し、「必要なインターフェースだけ」に依存できるようになります。
 
 → インターフェース分離の原則に準拠した設計になります。
 
@@ -108,6 +107,8 @@ class SimplePrinter implements MultiFunctionDevice {
   fax()  { throw new Error('このプリンタはFAXできません'); }
 }
 ```
+
+### 改善例
 
 ```ts
 interface Printer {
