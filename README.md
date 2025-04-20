@@ -15,6 +15,9 @@ SOLIDの原則についての覚書です。TypeScriptによるサンプルコ�
 - [I: **I**nterface Segregation Principle - インターフェース分離の原則](docs/interface-segregation-principle.md)
 - [D: **D**ependency Inversion Principle - 依存性逆転の原則](docs/dependency-inversion-principle.md)
 
+---
+ ✅ [実装チェックリスト](docs/solid-checklist.md)
+
 ## SOLID原則ケーススタディ
 
 - [ECサイト機能拡張](docs/practical-case-studies.md)

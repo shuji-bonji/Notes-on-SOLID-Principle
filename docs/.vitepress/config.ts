@@ -9,7 +9,10 @@ export default withMermaid({
   lang: 'ja',
 
   themeConfig: {
-    nav: [{ text: 'ホーム', link: '/' }],
+    nav: [
+      { text: 'ホーム', link: '/' },
+      { text: '実装チェックリスト', link: '/solid-checklist.md' },
+    ],
     sidebar: [
       {
         text: 'SOLID原則',
