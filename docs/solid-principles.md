@@ -12,8 +12,9 @@ SOLID原則は、保守性・拡張性・再利用性の高いソフトウェア
 | **I** | [インターフェース分離の原則](interface-segregation-principle.md) | クライアントにとって不要なメソッドへの依存を強制しない | 小さなインターフェースを提供し、結合度を下げる |
 | **D** | [依存性逆転の原則](dependency-inversion-principle.md) | 上位モジュールと下位モジュールは抽象に依存すべき | 実装に依存せず、モジュール間の独立性が高まる |
 
-
-> ✅ [各原則の実装チェックリストはこちら](./solid-checklist.md)
+----
+- 🔗[SOLID原則間の関連性](./relevance-of-solid-principles.md)  
+- ✅ [各原則の実装チェックリストはこちら](./solid-checklist.md)
 
 ## なぜSOLIDが必要なのか？
 

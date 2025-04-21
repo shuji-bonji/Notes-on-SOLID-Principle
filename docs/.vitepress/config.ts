@@ -69,7 +69,7 @@ export default withMermaid({
             text: '原則間の関連性',
             link: '/relevance-of-solid-principles',
           },
-          { text: '実装チェックリスト', link: '/solid-checklist' },
+          { text: '実装チェックリスト', link: '/solid-checklist.md' },
         ],
       },
       {
