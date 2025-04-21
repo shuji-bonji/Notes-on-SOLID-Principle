@@ -14,9 +14,9 @@ SOLIDの原則についての覚書です。TypeScriptによるサンプルコ�
 - [L: **L**iskov Substitution Principl - リスコフの置換原則](docs/liskov-substitution-principle.md)
 - [I: **I**nterface Segregation Principle - インターフェース分離の原則](docs/interface-segregation-principle.md)
 - [D: **D**ependency Inversion Principle - 依存性逆転の原則](docs/dependency-inversion-principle.md)
-
 ---
- ✅ [実装チェックリスト](docs/solid-checklist.md)
+- [SOLID原則間の関連性](relevance-of-solid-principles.md)
+-  ✅ [実装チェックリスト](docs/solid-checklist.md)
 
 ## SOLID原則ケーススタディ
 
