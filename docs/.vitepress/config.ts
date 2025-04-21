@@ -12,6 +12,7 @@ export default withMermaid({
     nav: [
       { text: 'ホーム', link: '/' },
       { text: '実装チェックリスト', link: '/solid-checklist.md' },
+      { text: 'OOPと関数型の比較', link: '/object-oriented-vs-functional/' },
     ],
     sidebar: [
       {
@@ -37,6 +38,31 @@ export default withMermaid({
       {
         text: 'ケーススタディ',
         items: [{ text: 'ECサイト機能拡張', link: '/practical-case-studies' }],
+      },
+      {
+        text: 'OOPと関数型の比較',
+        items: [
+          {
+            text: 'OOPとFPの比較概要',
+            link: '/object-oriented-vs-functional/index.md',
+          },
+          {
+            text: 'SRPにおけるOOPとFPの比較',
+            link: '/object-oriented-vs-functional/srp-oop-vs-fp.md',
+          },
+          {
+            text: 'OCPにおけるOOPとFPの比較',
+            link: '/object-oriented-vs-functional/ocp-oop-vs-fp.md',
+          },
+          {
+            text: 'FPにおけるDIPの応用',
+            link: '/object-oriented-vs-functional/dip-in-functional.md',
+          },
+          {
+            text: 'まとめ：適用可能な原則と限界',
+            link: '/object-oriented-vs-functional/summary.md',
+          },
+        ],
       },
     ],
     socialLinks: [
