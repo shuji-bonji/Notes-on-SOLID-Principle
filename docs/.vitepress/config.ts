@@ -7,7 +7,24 @@ export default withMermaid({
   description: 'TypeScriptで学ぶSOLID原則',
   base: '/Notes-on-SOLID-Principle/',
   lang: 'ja',
-
+  head: [
+    ['meta', { property: 'og:title', content: 'Notes on SOLID Principes' }],
+    [
+      'meta',
+      {
+        property: 'og:description',
+        content: 'SOLIDの原則',
+      },
+    ],
+    [
+      'meta',
+      {
+        property: 'og:image',
+        content:
+          'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/images/solid.png',
+      },
+    ],
+  ],
   themeConfig: {
     nav: [
       { text: 'ホーム', link: '/' },
