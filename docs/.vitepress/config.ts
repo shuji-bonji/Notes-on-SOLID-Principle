@@ -55,8 +55,16 @@ export default withMermaid({
             link: '/object-oriented-vs-functional/ocp-oop-vs-fp.md',
           },
           {
-            text: 'FPにおけるDIPの応用',
-            link: '/object-oriented-vs-functional/dip-in-functional.md',
+            text: 'LSPにおけるOOPとFPの比較',
+            link: '/object-oriented-vs-functional/lsp-oop-vs-fp.md',
+          },
+          {
+            text: 'ISPにおけるOOPとFPの比較',
+            link: '/object-oriented-vs-functional/isp-oop-vs-fp.md',
+          },
+          {
+            text: 'DIPにおけるOOPとFPの比較',
+            link: '/object-oriented-vs-functional/dip-oop-vs-fp.md',
           },
           {
             text: 'まとめ：適用可能な原則と限界',

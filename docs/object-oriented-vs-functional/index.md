@@ -14,9 +14,9 @@
 |--------|-------------|
 | 単一責任の原則（SRP） | [SRPにおけるOOPとFPの比較](./srp-oop-vs-fp.md) |
 | 開放/閉鎖原則（OCP） | [OCPにおけるOOPとFPの比較](./ocp-oop-vs-fp.md) |
-| 依存性逆転の原則（DIP） | [FPにおけるDIPの応用](./dip-in-functional.md) |
 | リスコフの置換原則（LSP） | [LSPにおけるOOPとFPの比較](./lsp-oop-vs-fp.md) |
 | インターフェース分離の原則（ISP） | [ISPにおけるOOPとFPの比較](./isp-oop-vs-fp.md) |
+| 依存性逆転の原則（DIP） | [DIPにおけるOOPとFPの比較](./dip-oop-vs-fp.md) |
 | まとめ | [適用可能な原則と限界](./summary.md) |
 
 ## 想定読者
