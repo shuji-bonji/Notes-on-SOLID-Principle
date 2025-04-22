@@ -41,23 +41,23 @@ export default withMermaid({
         items: [
           { text: 'SOLIDの原則とは', link: '/solid-principles.md' },
           {
-            text: '単一責任の原則',
+            text: 'S: 単一責任の原則',
             link: '/single-responsibility-principle.md',
           },
           {
-            text: 'オープンクローズドの原則',
+            text: 'O: オープンクローズドの原則',
             link: '/open-closed-principle.md',
           },
           {
-            text: 'リスコフの置換原則',
+            text: 'L: リスコフの置換原則',
             link: '/liskov-substitution-principle.md',
           },
           {
-            text: 'インターフェース分離の原則',
+            text: 'I: インターフェース分離の原則',
             link: '/interface-segregation-principle.md',
           },
           {
-            text: '依存性逆転の原則',
+            text: 'D: 依存性逆転の原則',
             link: '/dependency-inversion-principle.md',
           },
         ],
@@ -122,7 +122,7 @@ export default withMermaid({
 
     footer: {
       message: 'Released under the CC-BY-4.0 license.',
-      copyright: 'Copyright © 2025-present',
+      copyright: 'Copyright © 2025 shuij-bonji ',
     },
   },
 });
