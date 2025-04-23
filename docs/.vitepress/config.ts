@@ -8,18 +8,33 @@ export default withMermaid({
   base: '/Notes-on-SOLID-Principle/',
   lang: 'ja',
   head: [
-    ['meta', { property: 'og:title', content: 'Notes on SOLID Principes' }],
+    // Open Graph (Facebook, Slack, Discord などで使用される)
+    ['meta', { property: 'og:title', content: 'Notes on SOLID Principles' }],
+    ['meta', { property: 'og:description', content: 'SOLIDの原則' }],
     [
       'meta',
       {
-        property: 'og:description',
-        content: 'SOLIDの原則',
+        property: 'og:image',
+        content:
+          'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/images/solid.png',
       },
     ],
     [
       'meta',
       {
-        property: 'og:image',
+        property: 'og:url',
+        content: 'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/',
+      },
+    ],
+
+    // Twitter Card (Twitter / X)
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'Notes on SOLID Principles' }],
+    ['meta', { name: 'twitter:description', content: 'SOLIDの原則' }],
+    [
+      'meta',
+      {
+        name: 'twitter:image',
         content:
           'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/images/solid.png',
       },
