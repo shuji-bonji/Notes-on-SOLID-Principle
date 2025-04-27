@@ -1,16 +1,21 @@
 ---
+layout: home
 title: SOLIDの原則
+hero:
+  name: "SOLIDの原則"
+  text: "TypeScriptで学ぶSOLID設計原則"
+  tagline: "具体例と共に理解を深める"
+  image:
+    src: /images/solid.png
+    alt: SOLID Principles
+  actions:
+    - theme: brand
+      text: SOLIDの原則とは？
+      link: /solid-principles.md
+
 ---
 
-
-
-# 📘SOLIDの原則
 このサイトは、SOLID原則を具体例と共に解説し、実践的な理解を促すことを目的としています。
-
-- [SOLIDの原則とは？](solid-principles.md)
-
-<img src="/images/solid.svg" alt="SOLIDの図" style="width: 290px; height: 210px; margin:auto;"/>
-
 
 ## 🔎 各原則の一覧
 

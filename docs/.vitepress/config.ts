@@ -7,6 +7,7 @@ export default withMermaid({
   description: 'TypeScriptで学ぶSOLID原則',
   base: '/Notes-on-SOLID-Principle/',
   lang: 'ja',
+  // srcDir: './docs',
   head: [
     // Open Graph (Facebook, Slack, Discord などで使用される)
     ['meta', { property: 'og:title', content: 'Notes on SOLID Principles' }],
@@ -26,7 +27,6 @@ export default withMermaid({
         content: 'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/',
       },
     ],
-
     // Twitter Card (Twitter / X)
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:title', content: 'Notes on SOLID Principles' }],
@@ -40,6 +40,7 @@ export default withMermaid({
       },
     ],
   ],
+
   themeConfig: {
     nav: [
       { text: 'ホーム', link: '/' },
