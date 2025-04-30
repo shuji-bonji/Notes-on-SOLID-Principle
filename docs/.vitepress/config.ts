@@ -141,4 +141,7 @@ export default withMermaid({
       copyright: 'Copyright © 2025 shuij-bonji ',
     },
   },
+  sitemap: {
+    hostname: 'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/',
+  },
 });
