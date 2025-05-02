@@ -78,7 +78,6 @@ export default withMermaid({
           },
         ],
       },
-
       {
         items: [
           {
@@ -121,6 +120,14 @@ export default withMermaid({
           {
             text: 'まとめ：適用可能な原則と限界',
             link: '/object-oriented-vs-functional/summary.md',
+          },
+        ],
+      },
+      {
+        items: [
+          {
+            text: '関数型チェックリスト',
+            link: '/object-oriented-vs-functional/solid-checklist-fp.md',
           },
         ],
       },

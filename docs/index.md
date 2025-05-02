@@ -41,3 +41,6 @@ hero:
 - [インターフェース分離の原則（ISP）におけるOOPとFPの比較](./object-oriented-vs-functional/isp-oop-vs-fp.md) |
 - [依存性逆転の原則（DIP）におけるOOPとFPの比較](./object-oriented-vs-functional/dip-oop-vs-fp.md) 
 - [OOPと関数型における設計原則のまとめ](./object-oriented-vs-functional/summary.md) 
+
+---
+- ✅ [関数型チェックリスト](./object-oriented-vs-functional/solid-checklist-fp.md)

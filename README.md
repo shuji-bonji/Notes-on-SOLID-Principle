@@ -31,6 +31,8 @@ SOLIDの原則についての覚書です。TypeScriptによるサンプルコ�
 - [依存性逆転の原則（DIP）におけるOOPとFPの比較](docs/object-oriented-vs-functional/dip-oop-vs-fp.md) 
 - [OOPと関数型における設計原則のまとめ](docs/object-oriented-vs-functional/summary.md) 
 
+---
+- ✅ [関数型チェックリスト](docs/object-oriented-vs-functional/solid-checklist-fp.md)
 
 ## 🔗 関連リポジトリ
 
