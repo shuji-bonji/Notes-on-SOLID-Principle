@@ -53,9 +53,9 @@ export default withMermaid({
     ],
     sidebar: [
       {
-        text: 'SOLID原則',
+        text: 'SOLIDの原則とは',
+        link: '/solid-principles.md',
         items: [
-          { text: 'SOLIDの原則とは', link: '/solid-principles.md' },
           {
             text: 'S: 単一責任の原則',
             link: '/single-responsibility-principle.md',
@@ -95,8 +95,8 @@ export default withMermaid({
       },
       {
         text: 'OOPと関数型の比較',
+        link: '/object-oriented-vs-functional/',
         items: [
-          { text: 'OOPとFPとの比較', link: '/object-oriented-vs-functional/' },
           {
             text: 'SRPにおけるOOPとFPの比較',
             link: '/object-oriented-vs-functional/srp-oop-vs-fp.md',
