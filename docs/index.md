@@ -6,7 +6,7 @@ hero:
   text: "TypeScriptで学ぶSOLID設計原則"
   tagline: "具体例と共に理解を深める"
   image:
-    src: /images/solid.png
+    src: /images/solid.webp
     alt: SOLID Principles
   actions:
     - theme: brand

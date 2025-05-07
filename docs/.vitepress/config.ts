@@ -17,7 +17,7 @@ export default withMermaid({
       {
         property: 'og:image',
         content:
-          'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/images/solid.png',
+          'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/images/solid.webp',
       },
     ],
     [
@@ -36,7 +36,7 @@ export default withMermaid({
       {
         name: 'twitter:image',
         content:
-          'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/images/solid.png',
+          'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/images/solid.webp',
       },
     ],
   ],
