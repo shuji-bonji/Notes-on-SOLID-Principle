@@ -1,6 +1,3 @@
-
-
-
 # 関数型プログラミング チェックリスト（Functional Programming Checklist）
 
 ※ CLI やプレーンな形式で使いやすい、テキスト版チェックリストです。
