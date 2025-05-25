@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://shuji-bonji.github.io/Notes-on-SOLID-Principle/sitemap.xml
