@@ -1,3 +1,6 @@
+---
+description: 単一責任の原則（SRP）の本質とアクター観点からの設計手法について解説します。
+---
 # 単一責任の原則 (Single Responsibility Principle)
 ## 単一責任の原則とは
 

@@ -11,7 +11,10 @@ export default withMermaid({
   head: [
     // Open Graph (Facebook, Slack, Discord などで使用される)
     ['meta', { property: 'og:title', content: 'Notes on SOLID Principles' }],
-    ['meta', { property: 'og:description', content: 'SOLIDの原則' }],
+    [
+      'meta',
+      { property: 'og:description', content: 'TypeScriptで学ぶSOLID原則' },
+    ],
     [
       'meta',
       {
@@ -30,7 +33,10 @@ export default withMermaid({
     // Twitter Card (Twitter / X)
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:title', content: 'Notes on SOLID Principles' }],
-    ['meta', { name: 'twitter:description', content: 'SOLIDの原則' }],
+    [
+      'meta',
+      { name: 'twitter:description', content: 'TypeScriptで学ぶSOLID原則' },
+    ],
     [
       'meta',
       {
