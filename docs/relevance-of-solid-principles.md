@@ -1,5 +1,5 @@
 ---
-description: 各SOLID原則の相互関係を図解と解説で示し、全体的な設計理解を深めます。
+description: SOLID原則の5つの設計思想がどう連携するか図解で理解。SRP・OCP・LSP・ISP・DIPの相互関係と全体像を体系的に学び、設計力を高めます。
 ---
 # SOLID原則間の関連性
 

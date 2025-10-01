@@ -1,5 +1,5 @@
 ---
-description: SRP〜DIPまでの各SOLID原則におけるOOPとFPの実装手法と考え方の違いを総括した比較ガイド。
+description: OOPと関数型でSOLID原則はどう違う？SRP・OCP・LSP・ISP・DIPの実装アプローチを比較し、適材適所の設計判断力を養うための総括ガイド。
 ---
 
 # OOPと関数型における設計原則のまとめ

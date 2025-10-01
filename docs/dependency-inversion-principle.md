@@ -1,5 +1,5 @@
 ---
-description: 依存性逆転の原則（DIP）は、モジュール間の依存関係を抽象に向けることで、拡張性と保守性を高める設計原則です。
+description: 依存性逆転の原則（DIP）で柔軟な設計を実現。具象ではなく抽象に依存することで、テスト容易性と拡張性を両立するTypeScript設計パターンを解説。
 ---
 # 依存性逆転の原則 (Dependency Inversion Principle)
 

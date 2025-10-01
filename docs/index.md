@@ -1,6 +1,7 @@
 ---
 layout: home
 title: SOLIDの原則
+description: TypeScriptでSOLID原則を学ぶための包括的ガイド。単一責任・開放閉鎖・リスコフ置換・インターフェース分離・依存性逆転の5原則を具体例と共に解説します。
 hero:
   name: "SOLIDの原則"
   text: "TypeScriptで学ぶSOLID設計原則"
