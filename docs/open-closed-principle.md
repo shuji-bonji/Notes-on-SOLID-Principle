@@ -132,6 +132,28 @@ class NotificationService {
 }
 ```
 
+#### 使用例
+
+```ts
+// 1つの通知手段だけを使う場合
+const emailOnlyService = new NotificationService([
+  new EmailNotifier()
+]);
+emailOnlyService.notifyAll('メンテナンスのお知らせ');
+// メール送信: メンテナンスのお知らせ
+
+// 複数の通知手段を組み合わせる場合
+const multiChannelService = new NotificationService([
+  new EmailNotifier(),
+  new SMSNotifier(),
+  new PushNotifier()
+]);
+multiChannelService.notifyAll('重要なお知らせ！');
+// メール送信: 重要なお知らせ！
+// SMS送信: 重要なお知らせ！
+// プッシュ通知: 重要なお知らせ！
+```
+
 
 ### ✅ 利点
 

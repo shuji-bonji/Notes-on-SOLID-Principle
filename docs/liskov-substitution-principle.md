@@ -146,29 +146,65 @@ class Penguin extends Bird {
 
 ## 振る舞いの変更に気付くには
 
-スーパータイプとサブタイプで振る舞いが変更されていることを確認する最も簡単な方法は**単体テストを書く**こと
+スーパータイプとサブタイプで振る舞いが変更されていることを確認する最も簡単な方法は**単体テストを書く**ことです。
 
-#### コード
+たとえば、長方形（Rectangle）を継承した正方形（Square）があるとします。
+
 ```ts
-export const f = (r: Rectangle, wight: number, height: number): number => {
-  r.setWidth(wight);
+class Rectangle {
+  width = 0;
+  height = 0;
+  setWidth(width: number) {
+    this.width = width;
+  }
+  setHeight(height: number) {
+    this.height = height;
+  }
+  getArea(): number {
+    return this.width * this.height;
+  }
+}
+
+class Square extends Rectangle {
+  // 正方形は幅と高さが同じなので、両方を同時に設定
+  setWidth(width: number) {
+    super.setWidth(width);
+    super.setHeight(width);
+  }
+  setHeight(height: number) {
+    super.setWidth(height);
+    super.setHeight(height);
+  }
+}
+```
+
+#### 利用コード
+```ts
+const calculateArea = (r: Rectangle, width: number, height: number): number => {
+  r.setWidth(width);
   r.setHeight(height);
   return r.getArea();
 };
 ```
+
 #### テストコード
 ```ts
 describe('Rectangle Test', () => {
   test('Rectangle getArea', () => {
-    const r1 = new Rectangle();
-    expect(f(r1, 3, 4)).toBe(12);
+    const r = new Rectangle();
+    expect(calculateArea(r, 3, 4)).toBe(12); // ✅ 成功
   });
+
   test('Square getArea', () => {
-    const r1 = new Square();
-    expect(f(r1, 3, 4)).toBe(12); // 👈 16となり、テストに失敗する
+    const s = new Square();
+    expect(calculateArea(s, 3, 4)).toBe(12); // ❌ 失敗（16になる）
   });
 });
 ```
+
+**問題**：`Square`は`Rectangle`を継承しているのに、同じ関数で異なる結果が返ってきます。これは**リスコフの置換原則違反**です。
+
+利用者（`calculateArea`関数）は「幅3、高さ4なら面積12」を期待しているのに、`Square`では「最後に設定した値で両方が上書きされる」ため、面積が16（4×4）になってしまいます。
 
 ## 補足： 契約による設計
 
