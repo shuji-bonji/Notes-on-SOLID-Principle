@@ -53,7 +53,7 @@ runApplication(consoleLogger);
 ```
 
 - `runApplication` は `Logger` 関数に依存しており、具体的な出力方法には依存していません。
-- テスト時には以下のように差し替えることができます：
+- テスト時には以下のように差し替えることができます。
 
 ```ts
 const testLogger: Logger = (msg) => {

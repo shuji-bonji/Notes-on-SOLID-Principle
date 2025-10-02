@@ -6,23 +6,23 @@ description: 単一責任の原則（SRP）の本質とアクター観点から�
 
 **クラスは「たった一人のアクター（利用者・責任者）」に対して責任を持つべき**という原則です。
 
-> [!CAUTION]  
-> 「単一の責任を持つべき」は 簡略化された表現 で、「たった一人のアクター（利用者・利害関係者）に対して責任を持つべき」が 本質的な意味です。  
+> [!CAUTION]
+> 「単一の責任を持つべき」は 簡略化された表現 で、「たった一人のアクター（利用者・利害関係者）に対して責任を持つべき」が 本質的な意味です。
 > 本来の意図は、「1つの変更理由（=1人のアクター）に対してのみ責任を持つ」ということです。
 
-> [!NOTE]  
-> 単一責任の原則（Single Responsibility Principle）は、ロバート・C・マーティン（Uncle Bob）によって提唱された概念ですが、実はいくつかの表現方法があります。  
-> マーティン自身は「クラスを変更する理由は1つだけであるべき」という定義をしており、これを「1つのアクター」という観点から説明しています。アクターとは、変更を要求する利害関係者（ステークホルダー）や役割を指します。  
+> [!NOTE]
+> 単一責任の原則（Single Responsibility Principle）は、ロバート・C・マーティン（Uncle Bob）によって提唱された概念ですが、実はいくつかの表現方法があります。
+> マーティン自身は「クラスを変更する理由は1つだけであるべき」という定義をしており、これを「1つのアクター」という観点から説明しています。アクターとは、変更を要求する利害関係者（ステークホルダー）や役割を指します。
 > つまり、1つのクラスは1人のアクター（ユーザーや関係者）からの変更要求にのみ対応すべきという意味です。
 
 ## なぜ「アクター」の観点が重要か？
 
-単一責任の原則は、しばしば「クラスは1つの責任しか持つべきでない」と表現されますが、  
-この「責任」とは誰のためのものか、という**「アクター」**の視点が本質になります。
+単一責任の原則は、しばしば「クラスは1つの責任しか持つべきでない」と表現されますが、
+この「責任」とは誰のためのものか、という **「アクター」** の視点が本質になります。
 
 Robert C. Martin（提唱者）は次のように述べています。
 
-> “A class should have only one reason to change.”
+> "A class should have only one reason to change."
 > クラスには変更理由がひとつだけであるべき
 
 この「変更理由」とは、**そのクラスに変更を求める人や立場＝アクター**を意味します。
@@ -30,9 +30,9 @@ Robert C. Martin（提唱者）は次のように述べています。
 
 ### アクターとは？
 
-アクターとは「そのクラスの変更を要求する主体」です。クラスの振る舞いや構造に対して**変更を要求し得る主体**を指します。  
-つまり「そのクラスを利用している者（人・モジュール・他のシステム）」と言い換えることもできます。  
-システムを利用するユーザーだけでなく、開発・保守を行う運用者や管理者、外部インターフェースの仕様策定者なども含まれます。  
+アクターとは「そのクラスの変更を要求する主体」です。クラスの振る舞いや構造に対して**変更を要求し得る主体**を指します。
+つまり「そのクラスを利用している者（人・モジュール・他のシステム）」と言い換えることもできます。
+システムを利用するユーザーだけでなく、開発・保守を行う運用者や管理者、外部インターフェースの仕様策定者なども含まれます。
 たとえば、以下のようなものが該当します。
 
 - **ビジネスアクター**：経営層・営業部門・顧客など、ビジネス要件の変更を要求する人々
@@ -42,166 +42,256 @@ Robert C. Martin（提唱者）は次のように述べています。
 
 これらが1つのクラスに混在すると、**変更理由が複数になり、保守が困難になる**のです。
 
-### 🔎 例：SRP違反の構造
-
-```ts
-class ReportManager {
-  generateReport()  // 経営層
-  saveToDatabase()  // DBA
-  sendEmail()       // 運用担当
-}
-```
-```mermaid
-graph LR;
-  A[ビジネス部門] --> P[Printer];
-  B[DBA] --> F[FileSaver];
-  C[運用担当] --> E[EmailSender];
-
-  P -->|uses| R[ReportManager];
-  F -->|uses| R;
-  E -->|uses| R;
-```
-
-これは「1クラスが3つのアクターに責任を持っている」ので SRP違反 です。  
-各機能を別クラスに分離するのが望ましい設計です。
-
-
-
-
 ## 単一責任に違反している例
 
-以下は、レポートを印刷・保存・送信する処理を1つのクラスに詰め込んだ例です。
+以下は、従業員（Employee）に関する処理を1つのクラスに詰め込んだ例です。
+
+#### アクターとクラスの関係
+```mermaid
+graph LR;
+  A[経理部門<br/>CFO配下] -->|calculatePay を使用| E[Employee];
+  B[人事部門<br/>COO配下] -->|reportHours を使用| E;
+  C[技術部門<br/>CTO配下] -->|save を使用| E;
+```
+
+この図が示すように、**同じEmployeeクラスに対して、3つの異なる部門（アクター）が異なる目的で変更を要求する**状況になっています。
+
 #### クラス図
 ```mermaid
 classDiagram
-  class ReportManager {
-    +print()
-    +saveToFile()
-    +sendEmail()
+  class Employee {
+    +name: string
+    +hourlyRate: number
+    +hoursWorked: number
+    +calculatePay() number
+    +reportHours() string
+    +save() void
   }
 ```
+
 #### コード
 ```ts
-class ReportManager {
-  constructor(private title: string, private content: string) {}
+class Employee {
+  constructor(
+    public name: string,
+    public hourlyRate: number,
+    public hoursWorked: number
+  ) {}
 
-  print() {
-    console.log(`印刷: ${this.title}\n${this.content}`);
+  // 経理部門の関心事：給与計算
+  calculatePay(): number {
+    return this.hourlyRate * this.hoursWorked;
   }
 
-  saveToFile() {
-    console.log(`ファイル保存: ${this.title}.txt`);
+  // 人事部門の関心事：労働時間レポート
+  reportHours(): string {
+    return `${this.name}: ${this.hoursWorked}時間`;
   }
 
-  sendEmail() {
-    console.log(`メール送信: ${this.title}`);
+  // 技術部門（DBA）の関心事：データベース保存
+  save(): void {
+    console.log(`データベースに保存: ${this.name}`);
   }
 }
 ```
 
-
 ### 問題点
 
-- `print()` → プリンタ担当者の責任
-- `saveToFile()` → ファイル管理者の責任
-- `sendEmail()` → 通信・メール担当の責任
+このクラスは**3つの異なるアクター**に対して責任を持っています。
 
-アクターが異なる処理が1つのクラスに混在しており、単一責任の原則に違反しています。
+1. **経理部門（CFO配下）** → `calculatePay()`の仕様を変更したい
+   - 例：残業代の計算ロジックを変更、控除項目の追加
+2. **人事部門（COO配下）** → `reportHours()`の仕様を変更したい
+   - 例：レポート形式の変更、集計期間の変更
+3. **技術部門（CTO配下）** → `save()`の仕様を変更したい
+   - 例：データベースの種類変更、保存形式の変更
+
+### 具体的なリスク
+
+#### ケース1：給与計算ロジックの変更が人事レポートに影響
+```ts
+class Employee {
+  constructor(
+    public name: string,
+    public hourlyRate: number,
+    public hoursWorked: number
+  ) {}
+
+  // 経理部門が「正規時間と残業時間を分けて計算したい」と要求
+  calculatePay(): number {
+    const regularHours = Math.min(this.hoursWorked, 160);
+    const overtimeHours = Math.max(this.hoursWorked - 160, 0);
+    return regularHours * this.hourlyRate + overtimeHours * this.hourlyRate * 1.5;
+  }
+
+  // この変更により、reportHours() も影響を受ける可能性
+  reportHours(): string {
+    // hoursWorked の解釈が変わってしまうかもしれない
+    return `${this.name}: ${this.hoursWorked}時間`;
+  }
+
+  save(): void {
+    console.log(`データベースに保存: ${this.name}`);
+  }
+}
+```
+
+**問題**：経理部門のための変更が、人事部門が使っている`reportHours()`の挙動に影響を与える可能性があります。
+
+#### ケース2：データベース変更がビジネスロジックに影響
+```ts
+class Employee {
+  constructor(
+    public name: string,
+    public hourlyRate: number,
+    public hoursWorked: number
+  ) {}
+
+  calculatePay(): number {
+    return this.hourlyRate * this.hoursWorked;
+  }
+
+  reportHours(): string {
+    return `${this.name}: ${this.hoursWorked}時間`;
+  }
+
+  // DBAが「データベースをMongoDBに変更したい」と要求
+  save(): void {
+    // MongoDB用の保存処理に変更
+    const doc = {
+      name: this.name,
+      hourlyRate: this.hourlyRate,
+      hoursWorked: this.hoursWorked
+    };
+    console.log(`MongoDBに保存: ${JSON.stringify(doc)}`);
+  }
+}
+```
+
+**問題**：データベースの変更のためにEmployeeクラスを修正すると、給与計算や労働時間レポートのテストも全てやり直す必要があります。
+
+
+## 解決策：責任を分離する
+
+各アクターの責任を別々のクラスに分離します。
+
+#### アクターとクラスの関係（改善後）
+```mermaid
+graph LR;
+  A[経理部門<br/>CFO配下] --> P[PayCalculator];
+  B[人事部門<br/>COO配下] --> H[HourReporter];
+  C[技術部門<br/>CTO配下] --> D[EmployeeRepository];
+
+  P -->|uses| E[EmployeeData];
+  H -->|uses| E;
+  D -->|saves| E;
+```
+
+この構造では、各アクターが自分の関心事だけを持つクラスと関わるため、**変更の影響が他のアクターに波及しません**。
+
+#### クラス図
+```mermaid
+classDiagram
+  class EmployeeData {
+    +name: string
+    +hourlyRate: number
+    +hoursWorked: number
+  }
+
+  class PayCalculator {
+    +calculate(employee: EmployeeData) number
+  }
+
+  class HourReporter {
+    +report(employee: EmployeeData) string
+  }
+
+  class EmployeeRepository {
+    +save(employee: EmployeeData) void
+  }
+
+  EmployeeData <.. PayCalculator : uses
+  EmployeeData <.. HourReporter : uses
+  EmployeeData <.. EmployeeRepository : uses
+```
+
+#### コード
+```ts
+// 純粋なデータクラス（全アクターが共通で使うデータ構造）
+class EmployeeData {
+  constructor(
+    public name: string,
+    public hourlyRate: number,
+    public hoursWorked: number
+  ) {}
+}
+
+// 経理部門の責任
+class PayCalculator {
+  calculate(employee: EmployeeData): number {
+    return employee.hourlyRate * employee.hoursWorked;
+  }
+}
+
+// 人事部門の責任
+class HourReporter {
+  report(employee: EmployeeData): string {
+    return `${employee.name}: ${employee.hoursWorked}時間`;
+  }
+}
+
+// 技術部門の責任
+class EmployeeRepository {
+  save(employee: EmployeeData): void {
+    console.log(`データベースに保存: ${employee.name}`);
+  }
+}
+```
+
+### 実行例
+
+```ts
+const employee = new EmployeeData('田中太郎', 2000, 160);
+
+const payCalculator = new PayCalculator();
+const hourReporter = new HourReporter();
+const repository = new EmployeeRepository();
+
+console.log(payCalculator.calculate(employee));  // 320000
+console.log(hourReporter.report(employee));      // 田中太郎: 160時間
+repository.save(employee);                        // データベースに保存: 田中太郎
+```
+
+### 分離のメリット
+
+1. **変更の局所化**
+   - 経理部門が給与計算ロジックを変更しても、`PayCalculator`だけを修正すればよい
+   - 人事部門やDBAの処理には一切影響しない
+
+2. **テストの簡素化**
+   - 給与計算のテストは`PayCalculator`だけをテストすればよい
+   - データベース処理のモックを用意する必要がない
+
+3. **並行開発の実現**
+   - 経理部門向けの開発、人事部門向けの開発、DBA向けの開発を独立して進められる
 
 ## 状態（フィールド）も責任に含まれる
 
-単一責任の原則は「メソッド（処理）」だけでなく、「フィールド（状態）」にも関係します。  
-たとえば、あるクラスがレポートの内容とメール送信先の設定を同時に保持している場合、  
+単一責任の原則は「メソッド（処理）」だけでなく、「フィールド（状態）」にも関係します。
+たとえば、あるクラスが従業員の基本情報と給与計算用の一時データを同時に保持している場合、
 それぞれが異なるアクターの責任領域であれば、分離すべき設計かもしれません。
 
-- レポートの内容 → ビジネスアクター（営業部など）の関心
-- メール送信先 → 運用やインフラ担当の関心
+- 従業員の基本情報（名前、時給） → 人事部門の関心
+- 給与計算用の一時データ（控除額、賞与） → 経理部門の関心
 
 このように、**データ構造が異なるアクターに属する場合もSRP違反**となり得ます。
 
 ## 原則に違反するとどうなるか
 
-- 一部の修正（例: メール送信仕様変更）が他の処理（印刷や保存）にも影響する
+- 一部の修正（例: 給与計算仕様変更）が他の処理（労働時間レポートやDB保存）にも影響する
 - どの責任に影響があるかを特定するのに時間がかかる
 - テスト対象が多く、修正のリスクが高くなる
-
-```ts
-// メール送信仕様を変更したいが、他の処理も巻き込んでしまう例
-class ReportManager {
-  constructor(private title: string, private content: string) {}
-
-  print() {
-    console.log(`印刷: ${this.title}\n${this.content}`);
-  }
-
-  saveToFile() {
-    console.log(`ファイル保存: ${this.title}.txt`);
-  }
-
-  sendEmail() {
-    // メール仕様変更：宛先やフォーマット変更を行いたい
-    const recipient = 'admin@example.com';
-    const message = `件名: ${this.title}\n本文: ${this.content}`;
-    console.log(`新メール仕様で送信: To=${recipient}\n${message}`);
-  }
-}
-
-// → メール送信の仕様を変更するだけなのに、
-//    ReportManager そのものを変更してしまう。
-//    その結果、印刷処理や保存処理のテスト・挙動にも影響が出る可能性がある。
-```
-
-## 解決策：責任を分離する
-#### クラス図
-```mermaid
-classDiagram
-  class Report {
-    +title: string
-    +content: string
-  }
-
-  class Printer {
-    +print(report: Report)
-  }
-
-  class FileSaver {
-    +save(report: Report)
-  }
-
-  class EmailSender {
-    +send(report: Report)
-  }
-
-  Report <.. Printer : uses
-  Report <.. FileSaver : uses
-  Report <.. EmailSender : uses
-```
-
-#### コード
-```ts
-class Report {
-  constructor(public title: string, public content: string) {}
-}
-
-class Printer {
-  print(report: Report) {
-    console.log(`印刷: ${report.title}\n${report.content}`);
-  }
-}
-
-class FileSaver {
-  save(report: Report) {
-    console.log(`ファイル保存: ${report.title}.txt`);
-  }
-}
-
-class EmailSender {
-  send(report: Report) {
-    console.log(`メール送信: ${report.title}`);
-  }
-}
-```
-
+- 複数のアクターが同じクラスを変更するため、**マージコンフリクトが発生しやすい**
 
 ## 責任の分離の判断基準（リファクタリング時の指針）
 
@@ -210,19 +300,8 @@ class EmailSender {
 - メソッドごとに「これは誰のための処理か？」と問い直す
 - 異なるアクターが関心を持つメソッドが混在していたら、分離の検討をする
 - フィールドとメソッドが密接に関係している単位で、新しいクラスに抽出する
-
-### 実行例
-
-```ts
-const report = new Report('売上レポート', '売上は前年比120%でした。');
-const printer = new Printer();
-const saver = new FileSaver();
-const sender = new EmailSender();
-
-printer.print(report);
-saver.save(report);
-sender.send(report);
-```
+- **「このクラスを変更する理由は何個あるか？」を数える**
+  - 2つ以上あればSRP違反の可能性が高い
 
 ## 他のSOLID原則との関連
 
@@ -240,13 +319,13 @@ graph TD
 ```
 
 
-- **単一責任の原則** は、変更理由を1つに絞ることで、機能追加や仕様変更の影響範囲を限定できます。  
-  これにより、**オープンクローズドの原則（OCP）** が目指す「既存コードを変更せずに拡張する」ことが実現しやすくなります。  
-  例えば、メール送信仕様を変えたいとき、送信責任を分離しておけば、新たな `AdvancedEmailSender` を追加するだけで済み、既存の `Printer` や `FileSaver` を変更する必要はありません。
+- **単一責任の原則** は、変更理由を1つに絞ることで、機能追加や仕様変更の影響範囲を限定できます。
+  これにより、**オープンクローズドの原則（OCP）** が目指す「既存コードを変更せずに拡張する」ことが実現しやすくなります。
+  例えば、給与計算仕様を変えたいとき、計算責任を分離しておけば、新たな `OvertimePayCalculator` を追加するだけで済み、既存の `HourReporter` や `EmployeeRepository` を変更する必要はありません。
 
 ## 補足：DRY原則との関係
 
-DRY（Don’t Repeat Yourself）原則は「同じコードやロジックを繰り返さない」ことを推奨しますが、  
+DRY（Don't Repeat Yourself）原則は「同じコードやロジックを繰り返さない」ことを推奨しますが、
 **単一責任の原則（SRP）と混同すると、設計が複雑になる危険があります。**
 
 ### ❌ よくある誤解
@@ -256,35 +335,36 @@ DRY（Don’t Repeat Yourself）原則は「同じコードやロジックを繰
 #### クラス図
 ```mermaid
 classDiagram
-  class Report {
-    +title: string
+  class EmployeeData {
+    +name: string
   }
 
-  class ReportManager {
-    +print(report: Report)
-    +save(report: Report)
-    +send(report: Report)
+  class EmployeeManager {
+    +calculate(employee: EmployeeData) number
+    +report(employee: EmployeeData) string
+    +save(employee: EmployeeData) void
     -log(action: string)
   }
 
-  Report <.. ReportManager : uses
+  EmployeeData <.. EmployeeManager : uses
 ```
+
 #### コード
 ```ts
-class ReportManager {
-  print(report: Report) {
-    this.log('印刷');
-    console.log(`印刷: ${report.title}`);
+class EmployeeManager {
+  calculate(employee: EmployeeData): number {
+    this.log('給与計算');
+    return employee.hourlyRate * employee.hoursWorked;
   }
 
-  save(report: Report) {
+  report(employee: EmployeeData): string {
+    this.log('レポート生成');
+    return `${employee.name}: ${employee.hoursWorked}時間`;
+  }
+
+  save(employee: EmployeeData): void {
     this.log('保存');
-    console.log(`保存: ${report.title}.txt`);
-  }
-
-  send(report: Report) {
-    this.log('送信');
-    console.log(`送信: ${report.title}`);
+    console.log(`保存: ${employee.name}`);
   }
 
   private log(action: string) {
@@ -294,49 +374,53 @@ class ReportManager {
 }
 ```
 
-このようにログ出力をDRYの観点から共通化すると、一見よさそうに見えますが、  
-ログ出力の責任が印刷・保存・送信それぞれの機能に密結合してしまっています。
+このようにログ出力をDRYの観点から共通化すると、一見よさそうに見えますが、
+ログ出力の責任が給与計算・レポート生成・保存それぞれの機能に密結合してしまっています。
 
 
 ### ✅ 正しい構成例：責任の分離
 #### クラス図
 ```mermaid
 classDiagram
-  class Report {
-    +title: string
+  class EmployeeData {
+    +name: string
   }
 
   class Logger {
     +log(action: string)
   }
 
-  class Printer {
+  class PayCalculator {
     -logger: Logger
-    +print(report: Report)
+    +calculate(employee: EmployeeData) number
   }
 
-  class FileSaver {
+  class HourReporter {
     -logger: Logger
-    +save(report: Report)
+    +report(employee: EmployeeData) string
   }
 
-  class EmailSender {
+  class EmployeeRepository {
     -logger: Logger
-    +send(report: Report)
+    +save(employee: EmployeeData) void
   }
 
-  Logger <|-- Printer
-  Logger <|-- FileSaver
-  Logger <|-- EmailSender
-  Report <.. Printer : uses
-  Report <.. FileSaver : uses
-  Report <.. EmailSender : uses
+  Logger <|-- PayCalculator
+  Logger <|-- HourReporter
+  Logger <|-- EmployeeRepository
+  EmployeeData <.. PayCalculator : uses
+  EmployeeData <.. HourReporter : uses
+  EmployeeData <.. EmployeeRepository : uses
 ```
 
 #### コード
 ```ts
-class Report {
-  constructor(public title: string) {}
+class EmployeeData {
+  constructor(
+    public name: string,
+    public hourlyRate: number,
+    public hoursWorked: number
+  ) {}
 }
 
 // ログ機能を専用クラスとして分離
@@ -346,89 +430,90 @@ class Logger {
   }
 }
 
-class Printer {
+class PayCalculator {
   constructor(private logger: Logger) {}
 
-  print(report: Report) {
-    this.logger.log('印刷');
-    console.log(`印刷: ${report.title}`);
+  calculate(employee: EmployeeData): number {
+    this.logger.log('給与計算');
+    return employee.hourlyRate * employee.hoursWorked;
   }
 }
 
-class FileSaver {
+class HourReporter {
   constructor(private logger: Logger) {}
 
-  save(report: Report) {
+  report(employee: EmployeeData): string {
+    this.logger.log('レポート生成');
+    return `${employee.name}: ${employee.hoursWorked}時間`;
+  }
+}
+
+class EmployeeRepository {
+  constructor(private logger: Logger) {}
+
+  save(employee: EmployeeData): void {
     this.logger.log('保存');
-    console.log(`保存: ${report.title}.txt`);
-  }
-}
-
-class EmailSender {
-  constructor(private logger: Logger) {}
-
-  send(report: Report) {
-    this.logger.log('送信');
-    console.log(`送信: ${report.title}`);
+    console.log(`保存: ${employee.name}`);
   }
 }
 ```
-
-
 
 #### 実行例
 
 ```ts
-const report = new Report('月次レポート');
+const employee = new EmployeeData('田中太郎', 2000, 160);
 const logger = new Logger();
 
-const printer = new Printer(logger);
-const saver = new FileSaver(logger);
-const sender = new EmailSender(logger);
+const payCalculator = new PayCalculator(logger);
+const hourReporter = new HourReporter(logger);
+const repository = new EmployeeRepository(logger);
 
-printer.print(report);
-saver.save(report);
-sender.send(report);
+payCalculator.calculate(employee);  // [LOG]: 給与計算
+hourReporter.report(employee);      // [LOG]: レポート生成
+repository.save(employee);           // [LOG]: 保存
 ```
 
 ## 補足：インターフェースを使った責任の分離（TypeScript）
 
-TypeScriptでは、異なるアクターの責任をインターフェースとして分離することで、  
+TypeScriptでは、異なるアクターの責任をインターフェースとして分離することで、
 役割ごとの設計がしやすくなります。
+
 #### クラス図
 ```mermaid
 classDiagram
-  class Printable {
-    +print(report: Report)
+  class PayCalculable {
+    +calculate(employee: EmployeeData) number
   }
 
-  class Saveable {
-    +save(report: Report)
+  class HourReportable {
+    +report(employee: EmployeeData) string
   }
 
-  class Emailable {
-    +send(report: Report)
+  class EmployeeStorable {
+    +save(employee: EmployeeData) void
   }
 
-  class Report {
-    +title: string
-    +content: string
+  class EmployeeData {
+    +name: string
+    +hourlyRate: number
+    +hoursWorked: number
   }
 ```
+
 #### コード
 ```ts
-interface Printable {
-  print(report: Report): void;
+interface PayCalculable {
+  calculate(employee: EmployeeData): number;
 }
 
-interface Saveable {
-  save(report: Report): void;
+interface HourReportable {
+  report(employee: EmployeeData): string;
 }
 
-interface Emailable {
-  send(report: Report): void;
+interface EmployeeStorable {
+  save(employee: EmployeeData): void;
 }
 ```
 
-これらを実装するクラスは、単一のインターフェース（＝単一責任）を持つことになります。  
+これらを実装するクラスは、単一のインターフェース（＝単一責任）を持つことになります。
 この設計は、後に学ぶ「インターフェース分離の原則（ISP）」にもつながります。
