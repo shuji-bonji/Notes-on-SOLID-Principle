@@ -45,6 +45,7 @@ export default withMermaid({
           'https://shuji-bonji.github.io/Notes-on-SOLID-Principle/images/solid.png',
       },
     ],
+    ['link', { rel: 'icon', href: 'favicon.ico' }],
   ],
 
   themeConfig: {
