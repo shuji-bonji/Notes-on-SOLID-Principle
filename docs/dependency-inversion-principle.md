@@ -1,5 +1,6 @@
 ---
-description: 依存性逆転の原則（DIP）で柔軟な設計を実現。具象ではなく抽象に依存することで、テスト容易性と拡張性を両立するTypeScript設計パターンを解説。
+title: 依存性逆転の原則(DIP)で疎結合な設計【依存注入の実践】
+description: 抽象に依存し、具体に依存しない設計の実現方法。依存性注入（DI）パターンをTypeScriptで実装し、テストしやすい柔軟なコードを書く方法を解説。
 ---
 # 依存性逆転の原則 (Dependency Inversion Principle)
 

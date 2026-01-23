@@ -1,5 +1,28 @@
 ---
-description: SOLID原則の概要とそれぞれの意味、利点、学習リソースを体系的に紹介する導入ページです。
+title: SOLID原則を実例で理解する【5つの設計原則をTypeScriptで解説】
+description: 保守性の高いコードを書くための5つの原則を、実際のTypeScriptコード例とアンチパターンで解説。SRP・OCP・LSP・ISP・DIPが今日から使えます。
+head:
+  - - meta
+    - property: og:title
+      content: SOLID原則を実例で理解する【5つの設計原則をTypeScriptで解説】
+  - - meta
+    - property: og:description
+      content: 保守性の高いコードを書くための5つの原則を、実際のTypeScriptコード例とアンチパターンで解説。SRP・OCP・LSP・ISP・DIPが今日から使えます。
+  - - meta
+    - property: og:type
+      content: article
+  - - meta
+    - property: og:url
+      content: https://shuji-bonji.github.io/Notes-on-SOLID-Principle/solid-principles.html
+  - - meta
+    - name: twitter:card
+      content: summary
+  - - meta
+    - name: twitter:title
+      content: SOLID原則を実例で理解する【5つの設計原則をTypeScriptで解説】
+  - - meta
+    - name: twitter:description
+      content: 保守性の高いコードを書くための5つの原則を、実際のTypeScriptコード例とアンチパターンで解説。SRP・OCP・LSP・ISP・DIPが今日から使えます。
 ---
 # SOLID原則とは
 

@@ -1,5 +1,6 @@
 ---
-description: 単一責任の原則（SRP）の本質とアクター観点からの設計手法について解説します。
+title: 単一責任の原則(SRP)を実例で理解【変更に強い設計の基礎】
+description: 1つのクラスは1つの責任だけを持つべき理由を実例で解説。アクター（利害関係者）の概念から、DRY原則との違いまでTypeScriptで実践的に学べます。
 ---
 # 単一責任の原則 (Single Responsibility Principle)
 ## 単一責任の原則とは
