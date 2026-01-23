@@ -3,9 +3,9 @@ layout: home
 title: SOLIDの原則
 description: TypeScriptでSOLID原則を学ぶための包括的ガイド。単一責任・開放閉鎖・リスコフ置換・インターフェース分離・依存性逆転の5原則を具体例と共に解説します。
 hero:
-  name: "SOLIDの原則"
-  text: "TypeScriptで学ぶSOLID設計原則"
-  tagline: "具体例と共に理解を深める"
+  name: 'SOLIDの原則'
+  text: 'TypeScriptで学ぶSOLID設計原則'
+  tagline: '具体例と共に理解を深める'
   image:
     src: /images/solid.webp
     alt: SOLID Principles
@@ -13,7 +13,6 @@ hero:
     - theme: brand
       text: SOLIDの原則とは？
       link: /solid-principles.md
-
 ---
 
 このサイトは、SOLID原則を具体例と共に解説し、実践的な理解を促すことを目的としています。
@@ -27,8 +26,10 @@ hero:
 - [依存性逆転の原則（DIP）](./dependency-inversion-principle.md)
 
 ---
+
 - [SOLID原則間の関連性](relevance-of-solid-principles.md)
--  ✅ [実装チェックリスト](solid-checklist.md)
+- ✅ [実装チェックリスト](solid-checklist.md)
+- [SOLID原則への批判と限界](./solid-criticism.md)
 
 ## 🛠 ケーススタディ
 
@@ -44,4 +45,5 @@ hero:
 - [OOPと関数型における設計原則のまとめ](./object-oriented-vs-functional/summary.md)
 
 ---
+
 - ✅ [関数型チェックリスト](./object-oriented-vs-functional/solid-checklist-fp.md)

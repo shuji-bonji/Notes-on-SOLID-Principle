@@ -39,8 +39,9 @@ SOLID原則は、保守性・拡張性・再利用性の高いソフトウェア
 | **D** | [依存性逆転の原則](dependency-inversion-principle.md) | 上位モジュールと下位モジュールは抽象に依存すべき | 実装に依存せず、モジュール間の独立性が高まる |
 
 ----
-- 🔗[SOLID原則間の関連性](./relevance-of-solid-principles.md)  
+- 🔗[SOLID原則間の関連性](./relevance-of-solid-principles.md)
 - ✅ [各原則の実装チェックリストはこちら](./solid-checklist.md)
+- 🔍 [SOLID原則への批判と限界](./solid-criticism.md) - 過剰設計を避けるための視点
 
 ## なぜSOLIDが必要なのか？
 
