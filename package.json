@@ -24,10 +24,10 @@
   },
   "homepage": "https://github.com/shuji-bonji/Notes-on-SOLID-Principle#readme",
   "devDependencies": {
-    "vitepress": "^1.6.3"
+    "vitepress": "^1.6.4"
   },
   "dependencies": {
-    "mermaid": "^11.10.1",
+    "mermaid": "^11.14.0",
     "vitepress-plugin-mermaid": "^2.0.17"
   },
   "overrides": {
