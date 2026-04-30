@@ -433,7 +433,7 @@ class Rectangle implements Shape {
   }
 }
 
-class Square {
+class Square implements Shape {
   constructor(private length: number = 0) {}
   setLength(length: number) {
     this.length = length;
